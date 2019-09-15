@@ -17,9 +17,10 @@ a {
 	color: #d1ad54;
 	text-decoration: none;
 	text-transform: uppercase;
+	opacity: .5;
 }
 a:hover {
-	text-decoration: underline;
+	opacity: 1;
 }
 header {
 	margin: auto;
@@ -33,7 +34,13 @@ header {
 	text-align: center;
 	bottom: 0;
 }
-.main .button {
+.cover-nav {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	bottom: 40%;
+}
+nav .button {
 	display: inline-block;
 	background: url('button3.png');
 	background-size: cover;
@@ -43,7 +50,7 @@ header {
 	text-align: center;
 	opacity: .7;
 }
-.main .button:hover {
+nav .button:hover {
 	opacity: 1;
 }
 .sub {
@@ -139,4 +146,15 @@ footer {
 }
 #comment {
 	width: 576px;
+}
+.cover {
+	position: relative;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	background: url('cover.png');
+	background-size: cover;
 }
