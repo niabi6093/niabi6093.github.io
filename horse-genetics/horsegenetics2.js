@@ -22,7 +22,7 @@
 */
 
 //set file path constant, if required
-path="http://www.jenniferhoffman.net/horse/";
+path="http://niabi6093.github.io/horse-genetics/";
 
 hpath=path;
 //hpath=path+'half/';
