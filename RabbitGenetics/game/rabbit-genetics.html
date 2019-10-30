@@ -1,0 +1,83 @@
+<html>
+<head>
+	<title>Rabbit Color Genetics</title>
+	<meta name="author" content="Niabi">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="rabbitgenetics.css">
+	<script src="rabbitgenetics2.js"></script>
+</head>
+<body>
+	<div id="container">
+		<div id="borderDummy" class="barelyVis">
+		<div id="gamewindow">
+			<div id="rabbit">
+				<img id="basecoat" name="basecoat" src="black.png" border="0">
+				<img id="agouti" name="agouti" src="chestnut.png" border="0">
+				<img id="extension" name="extension" src="orange.png" border="0">
+				<img id="harlequin" name="harlequin" src="harle.png" border="0">
+				<img id="himalayan" name="himalayan" src="himi.png" border="0">
+				<img id="otter" name="otter" src="otter.png" border="0">
+				<img id="silver" name="silver" src="silver.png" border="0">
+				<img id="steel" name="steel" src="steel.png" border="0">
+				<img id="tort" name="tort" src="tort.png" border="0">
+				<img id="sable" name="sable" src="seal.png" border="0">
+				<img id="broken" name="broken" src="broken.png" border="0">
+				<img id="dutch" name="dutch" src="dutch1.png" border="0">
+				<img id="vienna" name="vienna" src="vienna.png" border="0">
+				<img id="white" name="white" src="white.png" border="0">
+				<img id="eye" name="eye" src="eye.png" border="0">
+			</div>
+			<div id="genes">
+				<div id="topbuffer"></div>
+				<div id="gene">
+					<img name="a1" src="a.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="a2" src="a.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="b1" src="b.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="b2" src="b.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="c1" src="c.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="c2" src="c.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="d1" src="d.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="d2" src="d.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="du1" src="du.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="du2" src="du.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="e1" src="e.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="e2" src="e.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="en1" src="_en.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="en2" src="_en.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="si1" src="si.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="si2" src="si.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="v1" src="v.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="v2" src="v.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+				<div id="gene">
+					<img name="w1" src="w.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+					<img name="w2" src="w.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">
+				</div>
+			</div>
+			<div id="information">
+				<div id="colorname" onclick="togglecolorinfo()">Chesntut</div>
+			</div>
+			<div id="colorinfo"><p>Chestnut is one of the most common rabbit coat colors, seen in almost every breed. Chestnut consists of red or brownish furs, with black tipping. Wildtype.</p></div>
+			<div id="arrows" onclick="togglecolorinfo()"><img src="arrow_down.png" name="arrow" alt="Toggle color description" title="Toggle color description" border="0"></div>
+		</div>
+		</div>
+	</div>
+	<script src="grabUrl.js"></script>
+</body>
+</html>
