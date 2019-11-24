@@ -1,0 +1,7 @@
+body {
+	background: url(background_left.png) left top no-repeat, url(background_right.png) right top no-repeat, #040302;
+	font-size: 12pt;
+}
+table {
+	font-size: 12pt;
+}

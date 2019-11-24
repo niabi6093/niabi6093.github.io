@@ -1,0 +1,149 @@
+
+<html>
+<head>
+	<title>Horse Coat Color Genetics: An Introduction</title>
+	<meta name="author" content="Jennifer Hoffman">
+	<meta name="keywords" content="horse, equine, coat color, genetics, horse color, interactive, game, learning, serious games">
+	<meta name="description" content="Learn how genes create coat colors in horses with this fun learning game!">
+	<meta http-equiv="X-UA-Compatible" content="IE=9">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="horsegenetics.css">
+	<script src="horsegenetics2.js"></script>
+</head>
+
+<body onload="prepAnims();preloader();">
+	<div id="debugOutput"></div>
+	<div id="container">
+		<div id="detailedinfo">
+		    <img src="titleExtension.png" border=0><br>
+		    <a href="#gamewindow_anchor" style="font-size:xx-small; display:block; float:left; margin-left:20px">Jump to Game Window</a> <a href="#gamewindow_anchor" style="font-size:xx-small; display:block; float:right; margin-right:20px">Jump to Game Window</a><br>
+		    <p>A horse's color all starts with one simple question: red or black?  While the 16 known genes of a horse all interact to produce its unique color pattern, there are only two colors that all others build off of.  These &quot;base&quot; colors are chestnut and black.</p>
+		    <p>The gene which controls whether a horse is red or black is called the Extension gene.  Its dominant allele causes the horse to form black pigment called eumelanin, while its recessive allele causes the horse to form red pigment called pheomelanin.</p>
+		    <p>Click on the e's in the <a href="#gamewindow_anchor">game window</a> below to toggle between these dominant and recessive alleles.  You'll notice that if you have one of each allele, the dominant black wins out and hides the single red allele.  Therefore, for the horse to show up as red, it must have <i>both</i> recessive alleles.</p>
+		    <p>A horse with all red hair is referred to as a chestnut.  While some people use the terms sorrel and chestnut separately to refer to horses with either light or dark red hair, the two are genetically identical.  The red pigment pheomelanin can cause a wide range of different shades, but they all will have a reddish cast.</p>
+		    <p>When identifying a horse's color, it's helpful to ignore white markings.  This is because, with the exception of spotting patterns, the genetic controls for white markings are completely unrelated to the genetic controls for the rest of the horse's color.</p>
+		    <a href="index.html">Go Back to Title</a> - <a href="agoutibay.html">Next: Agouti Bay</a><br><a href="horse-color-genetics.html">Jump to Complete Genetics</a>
+		</div>
+		<div id="borderDummy" class="barelyVis">
+		<div id="gamewindow">
+		<a name="gamewindow_anchor"></a>
+			<div id="horse">
+				<img id="basecoat" name="basecoat" src="chestnut.png" border="0">
+				<img id="sooty" name="sooty" src="sooty.png" border="0">
+				<img id="grey" name="grey" src="grey.png" border="0">
+				<img id="appaloosa" name="appaloosa" src="appaloosa11.png" border="0">
+				<img id="white" name="white" src="white.png" border="0">
+				<img id="silver" name="silver" src="silver.png" border="0">
+				<img id="roan" name="roan" src="roan.png" border="0">
+				<img id="rabicano" name="rabicano" src="rabicano.png" border="0">
+				<img id="tobiano" name="tobiano" src="tobiano.png" border="0">
+				<img id="overo" name="overo" src="overo.png" border="0">
+				<img id="sabino" name="sabino" src="sabino1.png" border="0">
+				<img id="splashedwhite" name="splashedwhite" src="splash1.png" border="0">
+			</div>
+			<div id="genes">
+				<div id="topbuffer"></div>
+				<div id="gene" class="circled">
+					<img name="e1" src="_e.png" border="0" onmousedown="cursorWait()" onmouseup="reverseAllele(this)">
+					<img name="e2" src="_e.png" border="0" onmousedown="cursorWait()" onmouseup="reverseAllele(this)">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="a1" src="_a.png" border="0">
+					<img name="a2" src="_a.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="g1" src="_g.png" border="0">
+					<img name="g2" src="_g.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="cr1" src="_cr.png" border="0">
+					<img name="cr2" src="_cr.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="d1" src="_d.png" border="0">
+					<img name="d2" src="_d.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="ch1" src="_ch.png" border="0">
+					<img name="ch2" src="_ch.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="f1" src="f.png" border="0">
+					<img name="f2" src="f.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="z1" src="_z.png" border="0">
+					<img name="z2" src="_z.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="sty1" src="_sty.png" border="0">
+					<img name="sty2" src="_sty.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="rb1" src="_rb.png" border="0">
+					<img name="rb2" src="_rb.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="rn1" src="_rn.png" border="0">
+					<img name="rn2" src="_rn.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="sb1" src="_sb.png" border="0">
+					<img name="sb2" src="_sb.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="w1" src="_w.png" border="0">
+					<img name="w2" src="_w.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="to1" src="_to.png" border="0">
+					<img name="to2" src="_to.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="o1" src="_o.png" border="0">
+					<img name="o2" src="_o.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="spl1" src="_spl.png" border="0">
+					<img name="spl2" src="_spl.png" border="0">
+				</div>
+				<div id="gene" class="subdued">
+					<img name="lp1" src="_lp.png" border="0">
+					<img name="lp2" src="_lp.png" border="0">
+				</div>
+				<div id="gene"  class="subdued">
+					<img name="patn11" src="_patn1.png" border="0">
+					<img name="patn12" src="_patn1.png" border="0">
+				</div>
+				<div id="gene"  class="subdued">
+					<img name="patn21" src="_patn2.png" border="0">
+					<img name="patn22" src="_patn2.png" border="0">
+				</div>
+			</div>
+			<div id="information">
+				<div id="colorname" onclick="togglecolorinfo()">Chestnut</div>
+			</div>
+			<div id="colorinfo"><p>Chestnut is one of the most common horse coat colors, seen in almost every breed.  Chestnut consists of a red or brownish coat, with a mane and tail the same or lighter in color than the coat.</p></div>
+			<div id="arrows" onclick="togglecolorinfo()"><img src="arrow_down.png" name="arrow" alt="Toggle color description" title="Toggle color description" border="0"></div>
+	  <div id="generatecolor">
+                <a href="index.html"><img src="bback.png" border="0" alt="back to title" title="back to title"></a>
+                <a href="#gamewindow_anchor"><img src="back.png" border="0" class="subdued"></a>
+                <a href="agoutibay.html#gamewindow_anchor"><img src="forward.png" border="0" alt="next to bay" title="next to bay"></a>
+                <a href="horse-color-genetics.html"><img src="fforward.png" border="0" alt="skip to end" title="skip to end"></a>
+            </div>
+            <div id="footer">
+                <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank"><img alt="Creative Commons License" title="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+            </div>
+		</div>
+		</div>
+		<div id="loadBarText">Initializing</div>
+		<div id="loadBarBox"><div id="loadBar"></div></div>
+	<div id="textFooter">
+		This work is licensed to Jennifer Hoffman under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License.  If you reuse this work, it must be attributed to <a href="http://www.jenniferhoffman.net">www.jenniferhoffman.net</a>.
+	</div>
+	</div>
+	<script type="text/javascript">
+		useCategories=new Array("ui","extension");
+	</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
+body {
+	background: url(background_left.png) left top no-repeat fixed, url(background_right.png) right top no-repeat fixed, #040302;
+	margin: auto;
+	min-width: 1200px;
+	color: #999;
+	font-family: Verdana;
+	font-size: 12pt;
+}
+table {
+	font-size: 12pt;
+}
+a {
+	color: #d1ad54;
+	text-decoration: none;
+	text-transform: uppercase;
+	opacity: .5;
+}
+a:hover {
+	opacity: 1;
+}
+header {
+	position: relative;
+	background: url('banner2.png') center;
+	background-size: cover;
+	width: 1200px;
+	height: 340px;
+	margin: auto;
+}
+header #banner {
+	width: 100%;
+}
+#nav_main {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	bottom: 40;
+}
+#nav_sub {
+	position: absolute;
+	top: 10;
+	right: 10;
+}
+nav #button {
+	text-align: center;
+	opacity: .7;
+	cursor: pointer;
+	font-family: 'Shadows Into Light', cursive;
+}
+nav #button:hover {
+	opacity: 1;
+}
+nav #button a {
+	opacity: 1;
+}
+#nav_main #button {
+	background: url('button3.png');
+	background-size: cover;
+	width: 120px;
+	height: 26px;
+	padding: 15px;
+	padding-top: 8px;
+	padding-bottom: 22px;
+	display: inline-block;
+	font-size: 20pt;
+}
+#nav_sub #button {
+	background: url('button.png');
+	background-size: cover;
+	width: 130px;
+	height: 20px;
+	padding: 10px;
+	padding-top: 3px;
+	padding-bottom: 17px;
+}
+#container {
+	width: 1000px;
+	padding: 10px;
+	margin: auto;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	text-align: center;
+}
+#page {
+	width: 1200px;
+	margin: auto;
+}
+footer {
+	text-align: center;
+	padding: 25px;
+	font-size: 10pt;
+	color: #fff;
+}
+#page_nav {
+	width: 600px;
+	height: 60px;
+	margin: auto;
+	background: url('footer.png') center no-repeat;
+	backgroud-size: cover;
+	text-align: center;
+	position: relative;
+}
+#page_nav #button {
+	display: inline-block;
+	background: url('button3.png');
+	background-size: cover;
+	width: 100px;
+	height: 20px;
+	padding: 10px;
+	padding-top: 5px;
+	padding-bottom: 15px;
+	margin-top: 8px;
+	font-family: 'Shadows Into Light', cursive;
+	font-size: 15pt;
+}
+.accordian {
+	cursor: pointer;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 15px;
+	width: 600px;
+	margin: auto;
+	color: #d1ad54;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+	text-align: center;
+	font-family: 'Shadows Into Light', cursive;
+	font-size: 18pt;
+}
+.pagepanel {
+	padding: 0 18px;
+	display: none;
+	overflow: hidden;
+}

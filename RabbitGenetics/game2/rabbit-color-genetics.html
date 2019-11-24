@@ -1,0 +1,74 @@
+<html>
+<head>
+	<title>Intro to Rabbit Genetics</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet"href="rabbitgenetics.css">
+	<script type="text/javascript">
+function reverseAllele(allele)
+{
+	var tempArray = allele.src.split("/");
+	var thisType = tempArray[tempArray.length-1];
+	thisType = thisType.substring(0,thisType.length-4);
+	var thisAllele = allele.name.slice(-1);
+	var newType='';
+	switch (thisType[0])
+	{
+		case '_':
+			switch(thisType) {
+				case "a":
+					newType="at"
+					break;
+			}
+			break;
+		default:
+			switch(thisType) {
+				case "at":
+					newType ="_a";
+					break;
+			}
+	}
+}
+	</script>
+</head>
+<body>
+	<div id="navbar">
+		<div id="nav">
+			<a href="agouti.html"><< First</a> <a href="">< Prev</a> <a id="showhidehelp" onclick="showhidehelp()">Help?</a> <a class="disabled">Next ></a> <a class="disabled">Last >></a>
+		</div>
+	</div>
+	<div id="container">
+		<h2>Intro to Rabbit Genetics</h2>
+		This is Niabi's interactive guide to help players learn rabbit genetics for their breeding projects.
+		<div id="borderDummy">
+		<div id="gamewindow">
+			<div id="rabbit">
+				<img id="basecoat" id="basecoat" src="black.png" border="0">
+				<img id="agouti" id="agouti" src="chestnut.png" border="0">
+				<img id="extension" id="extension" src="orange.png" border="0">
+				<img id="otter" id="otter" src="otter.png" border="0">
+				<img id="harlequin" id="harlequin" src="harle.png" border="0">
+				<img id="steel" id="steel" src="steel.png" border="0">
+				<img id="tort" id="tort" src="tort.png" border="0">
+				<img id="silver" id="silver" src="silver.png" border="0">
+				<img id="himalayan" id="himalayan" src="himi.png" border="0">
+				<img id="broken" id="broken" src="broken.png" border="0">
+				<img id="dutch" id="dutch" src="dutch1.png" border="0">
+				<img id="vienna" id="vienna" src="vienna.png" border="0">
+				<img id="white" id="white" src="white.png" border="0">
+				<img id="eye" id="eye" src="eye.png" border="0">
+			</div>
+			<div id="genes">
+				<div id="topbuffer"></div>
+				<div id="gene">
+					<img id="a1" src="a.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">	
+					<img id="a2" src="a.png" border="0" onmousedown="cursorWait();" onmouseup="reverseAllele(this);updateURL();">	
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+	<div id="footer">
+		Copyright © LuckyLapine 2011 - 2019. All Rights Reserved.
+	</div>
+</body>
+</html>
