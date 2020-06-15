@@ -1,0 +1,522 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(1552)http://kippenjungle.nl/kruisingFlexJH3.html?MODULE=kruisingFlexJH3.html&DATA=S;Cat%20Genetics;;M;https://niabi6093.github.io/CatGenetics/ImgGen/;png;1,G;O;;S;,G;B;;;,G;D;;;,G;C;;;,G;W;;;,G;S;;;,G;A;;;,G;Mc;;;,G;Ta;;;,G;Sp;;;,A;W;WS;;piebald-;H;tuxedo-;;,A;W;w;;;D;;W;,A;S;S;;high;H;low;;,A;S;s;;;D;;W;,A;C;C;;;D;;W;,A;C;cb;;sepia-;H;mink-;;,A;C;cs;;pointed-;D;;;,A;Mc;Mc;;mackerel;D;;W;,A;Mc;mc;;classic;D;;;,A;Ta;Ta;;ticked;D;;;,A;Ta;ta;;;D;;W;,A;Sp;Sp;;spotted;D;;;,A;Sp;sp;;;D;;W;,A;A;A;;tabby;D;;W;,A;A;a;;self;D;;;,A;O;O;S;ginger;H;_%20tortie-%20red;;,A;O;o;S;;D;;W;,A;B;B;;black;D;;W;,A;B;b;;chocolate;D;;;,A;B;b1;;cinnamon;D;;;,A;D;D;;;D;;W;,A;D;d;;dilute;D;;;,C;RP1;mackerel;ticked;;,C;RP1;classic;ticked;;,C;RP1;spotted;ticked;;,C;RP1;mackerel;spotted;;,C;RP1;classic;spotted;;,C;RM;tabby;;;,C;RP1;red;tortie;tabby%20red;,C;RP1;tortie;piebald;calico;,C;RP;piebald;high;van;,C;RP;tuxedo;high;saddle;,C;RP;piebald;low;harlequin;,C;RP;tuxedo;low;mantle;,C;RP1;tortie;saddle;calico;,C;RP1;tortie;mantle;calico;,C;RP;high;;minimal-;,C;RP;low;;locket-;,C;RP1;tabby;mackerel;mackerel;,C;RP1;tabby;classic;classic;,C;RP1;tabby;ticked;ticked;,C;RP1;tabby;spotted;spotted;,C;RP1;mackerel;self;;,C;RP1;classic;self;;,C;RP1;ticked;self;;,C;RP1;spotted;self;;,C;RP;_;black;black;,C;RP;_;chocolate;chocolate;,C;RP;_;cinnamon;cinnamon;,C;RP1;black;dilute;blue;,C;RP1;chocolate;dilute;lilac;,C;RP1;cinnamon;dilute;fawn;,C;RP1;black;ginger;;,C;RP1;chocolate;ginger;;,C;RP1;cinnamon;ginger;;,C;RP;ginger;;red;,C;RP1;red;dilute;cream;,C;RM;dilute;;;,C;RM;self;;; -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>Cat Genetics</title>
+<meta property="og:image" content="http://kippenjungle.nl/PLAATJESMAP/images/metbonnie.jpg">
+<link rel="stylesheet" type="text/css" href="./mantleblackmackereltabby_files/dragsort.css">
+<style type="text/css">
+img {border:0px}
+</style>
+<script src="./mantleblackmackereltabby_files/kruising.js.download" type="text/javascript"></script>
+<script src="./mantleblackmackereltabby_files/kruisingFlex.js.download" type="text/javascript"></script>
+<script src="./mantleblackmackereltabby_files/kruisingFlexGui.js.download" type="text/javascript"></script>
+<script src="./mantleblackmackereltabby_files/dragsort.js.download" type="text/javascript"></script>
+<script language="JavaScript">
+var startheight = 590;
+var layerapp = "http://kippenjungle.nl/layeredimage.php?";
+//
+function setlociFlex(mf,gt)
+{
+  var NArr = new Array();
+  NArr = gt.split(',');
+  for (i=0;i<NArr.length;i++)
+  {
+	if (NArr[i]!="")
+	{
+		dgebi(listitems[i]+mf).value=NArr[i];
+	}
+  }
+}
+function getGTfromLociFlex(mf)
+{
+  var gt = "";
+  for (i=0;i<listitems.length;i++)
+  {
+    if(i>0) gt+=",";
+	gt += dgebi(listitems[i]+mf).value;
+  }
+  return gt;
+}
+function listsReset()
+{
+	for(i in listitems)
+	{
+		dgebi(listitems[i]+"M").value=listMdefs[i];
+		dgebi(listitems[i]+"F").value=listFdefs[i];
+	}
+	goEN(1);
+	goEN(2);
+	dgebi("result1Embed").innerHTML = "";
+	dgebi("result2Embed").innerHTML = "";
+	dgebi('span1').innerHTML="";
+}
+function init()
+{
+	moduleFlex2 = "kruisingFlexJH3.html";
+	//
+	initGui1();
+	//
+	var Mtxt = "";	
+	var optval = "";
+	var optval2 = "";
+	dgebi("Mloci").innerHTML = "";
+	for (x in listoptionsMFlex)
+	{
+		Mtxt = "";                                             
+		for(xx in listoptionsMFlex[x])
+		{
+			optval = listoptionsMFlex[x][xx];
+			optval2 = listoptionsMFlex2[x][xx];
+			Mtxt += "<OPTION VALUE='"+optval+"'>"+optval2+"</OPTION>";
+		}
+		dgebi("Mloci").innerHTML += "<SELECT id="+listitems[x]+"M title='"+listLociInfo[x][1]+"' onChange=goEN(1)>"+Mtxt+"</SELECT>";
+		if((1*x+1)%4==0) dgebi("Mloci").innerHTML += "<BR>";
+	}
+	for (x in listoptionsFFlex)
+	{
+		Mtxt = "";                                             
+		for(xx in listoptionsFFlex[x])
+		{
+			optval = listoptionsFFlex[x][xx];
+			optval2 = listoptionsFFlex2[x][xx];
+			Mtxt += "<OPTION VALUE='"+optval+"'>"+optval2+"</OPTION>";
+		}
+		dgebi("Floci").innerHTML += "<SELECT id="+listitems[x]+"F  title='"+listLociInfo[x][1]+"' onChange=goEN(2)>"+Mtxt+"</SELECT>";
+		if((1*x+1)%4==0) dgebi("Floci").innerHTML += "<BR>";
+	}
+	//
+	for(i in listitems)
+	{
+		dgebi(listitems[i]+"M").value=listMdefs[i];
+		dgebi(listitems[i]+"F").value=listFdefs[i];
+	}
+	//
+	initGui2();
+	//
+	//additional
+	setColorDescFlex(1,gmFlex);
+	setColorDescFlex(2,gfFlex);
+}       
+//
+//JH overrides
+//
+function GetPlaatjeFlexDBJH(klr,mf)
+{
+	return klr.replace(/ /g,"").replace(/,/g,"")+"."+jpgextension;
+}
+function setColorDescFlex(idx,gt)
+{
+	var thisKlr = "";
+	var spl = "";
+	var composedpic = "";
+	var pic1 = "dead.png";
+	if(idx==1)
+	{
+		thisKlr = GetKleurFlex("M",gt);	
+		spl = GetSplitFlex("M",gt);
+		//
+		composedpic = GetPlaatjeFlexDBJH(thisKlr,"M");
+		pic1 = jpgpath+composedpic;
+		dgebi("Flex1").src = layerapp+"ext="+jpgextension+"&pic="+pic1;
+		//
+		dgebi("FlexA1").href = dgebi("Flex1").src;
+	}
+	else if(idx==2)
+	{
+		thisKlr = GetKleurFlex("F",gt);
+		spl = GetSplitFlex("F",gt);
+		//
+		composedpic = GetPlaatjeFlexDBJH(thisKlr,"F");
+		pic1 = jpgpath+composedpic;
+		dgebi("Flex2").src = layerapp+"ext="+jpgextension+"&pic="+pic1;
+		//
+		dgebi("FlexA2").href = dgebi("Flex2").src;
+	}
+	dgebi("Flex"+idx).title = gt;
+	dgebi("LabelFlex"+idx).innerHTML = MockUpGT1(gt)+"<BR><B>"+thisKlr.replace(/\_/g," ")+"</B><BR><I>"+MockUpGT1(spl)+"</I>";
+}
+//
+//
+function KruisEmbed1()
+{
+	//
+	crossnr += 1;
+	select4later("M",gmFlex,dgebi("Flex1").src,"CROSS");
+	select4later("F",gfFlex,dgebi("Flex2").src,"CROSS");
+	//
+	var ResultArrayEmbed = new Array();
+	var hidegtchecked = "0";
+	if(dgebi("HideGenotype").checked)
+	{
+		hidegtchecked = "1";
+	}
+	else
+	{
+		hidegtchecked = "0";
+	}
+	var Mammal = setMammal(gmFlex,gfFlex);
+	ResultArrayEmbed = Kruising(gmFlex,gfFlex,"0");
+	var ResultHelper = new Array();
+	var TotalAnimals = 0;
+	//absolute positioning of pictures
+	//height of parents' pics = 320 
+	//grid start at 550?
+	var rowheight = 1.5*picsize;
+	var cumheight = startheight;
+	//format the array
+	var txt = "<TABLE cellspacing=0 >";
+	for(ee=0;ee<ResultArrayEmbed.length;ee++)
+	{
+		if(ResultArrayEmbed[ee].split(';')[0]!="GENOTYPE") break;//bug
+		//
+		var gt = ResultArrayEmbed[ee].split(';')[2];
+		var mf = setMF2(Mammal,gt);
+		var mf2 = mf.replace("M","Male").replace("F","Female");
+		var perc = ResultArrayEmbed[ee].split(';')[3].replace("animals","specimens");
+		var clr = GetKleurFlex(mf,gt);
+		var jpg = GetPlaatjeFlexDB(clr,mf);
+		clr = clr.replace(/\_/g," ");//
+		//
+		var currheight = cumheight+(0.25*picsize);
+		cumheight += rowheight;
+		//
+		var img1 = "<A target=_blank href='"+layerapp+"ext="+jpgextension+"&pic="+jpg+"' ><img style='margin-left:10px' onerror='this.src=\"dead.png\";' src='"+layerapp+"ext="+jpgextension+"&pic="+jpg+"' height="+picsize+" /></A>";//GetPicLayers(mf,jpg,currheight);
+		if(showPics==0) img1 = "<B><FONT size=7>*</FONT></B>";
+		txt += "<TR height="+rowheight+" ><TD valign=middle width="+rowheight+" >"+img1+"</TD><TD valign=middle >";
+		txt += MockUpGT1(gt)+"<BR>";
+		txt += "Gender = "+mf2+", Ratio"+perc.split('Ratio')[1]+"<BR>";
+		var spl = GetSplitFlex(mf,gt);
+		txt += "<B>"+clr+"</B>&nbsp;&nbsp;&nbsp;<I>"+MockUpGT1(spl)+"</I><BR>";
+		if (mf=="M" ||mf=="F")
+		{
+			txt += "<A href=javascript:setLists2('"+mf+"','"+gt+"','"+jpg+"')>Continue with this "+mf2+"</A> | <A href=javascript:select4later('"+mf+"','"+gt+"','"+jpg+"')>Select for later</A>";
+		}
+		else
+		{
+			txt += "<A href=javascript:setLists2('M','"+gt+"','"+jpg+"')>Continue as Male</A> | <A href=javascript:setLists2('F','"+gt+"','"+jpg+"')>Continue as Female</A> | <A href=javascript:select4later('M','"+gt+"','"+jpg+"')>Select for later as Male</A> | <A href=javascript:select4later('F','"+gt+"','"+jpg+"')>Select for later as Female</A>";
+		}	
+		txt += "</TD></TR>";
+		//
+		if(ee==0)
+		{
+			TotalAnimals = perc.split('=')[2].split('/')[1];
+		}
+		ResultHelper[ResultHelper.length] = new Array(clr,mf2,"",perc.split('=')[2].split('/')[0],jpg);
+	}
+	if(hidegtchecked=="0")
+	{
+		dgebi("result1Embed").innerHTML = txt+"</TABLE>";
+	}
+	else
+	{
+		dgebi("result1Embed").innerHTML = "";
+	}
+	//
+	ResultHelper.sort();
+	var prevclr = ResultHelper[0][0];
+	var prevmf  = ResultHelper[0][1];
+	var clrcnt  = 0;
+	var ResultSummary = new Array();
+	for(r in ResultHelper)
+	{
+		if(prevclr == ResultHelper[r][0] && prevmf == ResultHelper[r][1] && r==ResultHelper.length-1)
+		{
+			clrcnt += 1*(ResultHelper[r][3]);
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r][0],ResultHelper[r][1],clrcnt,ResultHelper[r][2],ResultHelper[r][4]);			
+		}
+		else if((prevclr != ResultHelper[r][0] || prevmf != ResultHelper[r][1]) && r==ResultHelper.length-1)
+		{
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r-1][0],ResultHelper[r-1][1],clrcnt,ResultHelper[r-1][2],ResultHelper[r-1][4]);
+			clrcnt = 1*(ResultHelper[r][3]);
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r][0],ResultHelper[r][1],clrcnt,ResultHelper[r][2],ResultHelper[r][4]);
+		}
+		else if((prevclr != ResultHelper[r][0] || prevmf != ResultHelper[r][1]))
+		{
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r-1][0],ResultHelper[r-1][1],clrcnt,ResultHelper[r-1][2],ResultHelper[r-1][4]);
+			clrcnt = 1*(ResultHelper[r][3]);
+		}
+		else
+		{
+			clrcnt += 1*(ResultHelper[r][3]);
+		}
+		prevclr = ResultHelper[r][0];
+		prevmf  = ResultHelper[r][1];
+	}
+	txt = "Color Summary:<BR><TABLE cellspacing=0 >";
+	//
+	if(hidegtchecked!="0") cumheight = startheight;
+	cumheight += 45;
+	rowheight = 1.2*picsize;
+	//
+	dataArray = new Array();
+	//
+	for(s in ResultSummary)
+	{
+		var currheight = cumheight+(0.1*picsize);
+		cumheight += rowheight;
+		//
+		var img1 = "<A target=_blank href='"+layerapp+"ext="+jpgextension+"&pic="+ResultSummary[s][4]+"' ><img style='margin-left:10px' onerror='this.src=\"dead.png\";' src='"+layerapp+"ext="+jpgextension+"&pic="+ResultSummary[s][4]+"' height="+picsize+" /></A>";//GetPicLayers(ResultSummary[s][1],ResultSummary[s][4],currheight);
+		if(showPics==0) img1 = "<B><FONT size=7>*</FONT></B>";
+		txt += "<TR height="+rowheight+"><TD valign=middle width="+rowheight+">"+img1+"</TD><TD valign=middle >";
+		var perc = GetPercentage(1*(ResultSummary[s][2]),TotalAnimals);
+		txt += "Gender = "+ResultSummary[s][1]+", "+perc+"%, minimum of specimens to breed: "+Math.ceil(TotalAnimals/(1*(ResultSummary[s][2])))+"<BR>";
+		txt += "<B>"+ResultSummary[s][0]+"</B><BR>";		
+		txt += "</TD></TR>";
+		if(1*perc < 10) perc = "0"+perc;
+		dataArray[dataArray.length] = new Array("",perc,ResultSummary[s][1],ResultSummary[s][0]);
+	}
+	dgebi("result2Embed").innerHTML = txt+"</TABLE>";
+	//
+	colArray  = new Array("","Percentage","Gender","Phenotype");
+	//
+	fillTab();
+}
+//
+function KruisMatrix2()
+{
+	//
+	crossnr += 1;
+	select4later("M",gmFlex,dgebi("Flex1").src,"PUNNETT");
+	select4later("F",gfFlex,dgebi("Flex2").src,"PUNNETT");
+	//
+	var ResultArrayEmbed = new Array();
+	var Mammal = setMammal(gmFlex,gfFlex);
+	ResultArrayEmbed = KruisingMatrix(gmFlex,gfFlex);
+	//verwerken matrix
+	var mtx = //"<INPUT id=SetMockLevel type='checkbox' onClick='setMockLevel();' onChange=setMockLevel() >Use Short Genotype Notation</INPUT><BR>"+
+	"<TABLE><TR><TD>Gametes</TD><TD></TD><TD>Maternal</TD></TR>";
+	mtx += "<TR><TD></TD><TD></TD>";
+	for(x in ResultArrayEmbed[0])
+	{
+		mtx += "<TD bgcolor=orange align=middle>"+MockUpGT1(ResultArrayEmbed[0][x]).replace(/,/g,", ")+"</TD>";
+	}
+	mtx += "</TR><TD>Paternal</TD>";
+	for(xx in ResultArrayEmbed)
+	{
+		if(xx > 1) //f0=female gametes;1=male gametes
+		{
+			mtx += "<TD bgcolor=orange>"+MockUpGT1(ResultArrayEmbed[1][xx-2]).replace(/,/g,", ")+"</TD>";
+			for(xxx in ResultArrayEmbed[xx])
+			{
+				mf = setMF(Mammal,ResultArrayEmbed[1][xx-2],ResultArrayEmbed[0][xxx]);
+				thisGT = ResultArrayEmbed[xx][xxx];
+				thisKlr = GetKleurFlex(mf,thisGT);
+				thisJpg = GetPlaatjeFlexDB(thisKlr,mf);
+				thisKlr = thisKlr.replace(/\_/g," ");//
+				var img1 = "<A target=_blank href='"+layerapp+"ext="+jpgextension+"&pic="+thisJpg+"' ><IMAGE alt='Sorry, no pic yet' title='Click for composed picture'  onerror='this.src=\"dead.png\";' src='"+layerapp+"ext="+jpgextension+"&pic="+thisJpg+"' height="+picsize+" /></A><BR>";
+				if(showPics==0) img1 = "";
+				var spl = GetSplitFlex(mf,thisGT);
+				if(spl != "") spl = "<I>"+MockUpGT1(spl)+"</I>";
+				if(mf=="M" || mf=="F")
+				{
+					mtx += "<TD bgColor=yellow valign=top align=middle>"+img1+thisKlr+"<BR>"+spl+"<BR><A href=javascript:setLists2matrix('"+mf+"','"+thisGT+"','"+thisJpg+"');>Continue with this "+mf.replace("M","Male").replace("F","Female")+"</A><BR><BR>"+MockUpGT1(thisGT).replace(/,/g,", ")+"</TD>";
+				}
+				else
+				{
+					mtx += "<TD bgColor=yellow valign=top align=middle>"+img1+thisKlr+"<BR>"+spl+"<BR><A href=javascript:setLists2matrix('M','"+thisGT+"','"+thisJpg+"');>Continue as Male</A><BR><BR><A href=javascript:setLists2matrix('F','"+thisGT+"','"+thisJpg+"');>Continue as Female</A><BR><BR>"+MockUpGT1(thisGT).replace(/,/g,", ")+"</TD>";
+				}	
+			}
+			mtx += "</TR><TR><TD></TD>";
+		}
+	}
+	mtx += "</TR></TABLE>";
+	dgebi("result1Embed").innerHTML = mtx;
+	//
+	dgebi("result2Embed").innerHTML = "";
+	dgebi('span1').innerHTML="";
+	//
+	//if(MockLevel==3) dgebi("SetMockLevel").checked = true;
+}
+//
+//Selected animals:
+function select4later(mf,gtTxt,jpg,used)
+{
+	var klTxt = GetKleurFlex(mf,gtTxt).replace(/\_/g," ");	  
+	var enkl = MockUpGT1(GetSplitFlex(mf,gtTxt));
+	var today = new Date();
+	var tijd =getTijd();
+	var cnr = "";
+	if(used=="PUNNETT")
+	{
+		used = "=> Punnett ";
+		cnr  = crossnr;
+		
+	}
+	else if(used=="CROSS")
+	{
+		used = "=> ";
+		cnr  = crossnr;
+		
+	}
+	else if(used=="USED")
+	{
+		used = "=> P";
+	}
+	else
+	{
+		used = "";
+	}
+	if(cookieName)
+	{
+		var tmp = getStringFromCookie(cookieName);	
+		if(tmp && tmp.indexOf("[")>=0 && tmp.indexOf("]")>=0)
+		{
+			ArraySelected = eval(getStringFromCookie(cookieName));
+		}
+	}
+	ArraySelected[ArraySelected.length] = new Array(mf,gtTxt,klTxt,enkl,jpg,tijd,used,cnr);
+	if(cookieName){
+		setStringToCookie(cookieName,serializeForCookie(ArraySelected));
+	}
+}
+//
+function setLists2(mf,gt,pic)
+{
+	var thisKlr = GetKleurFlex(mf,gt).replace(/\_/g," ");
+	var splitloci = GetSplitFlex(mf,gt);
+	setlociFlex(mf,gt);		
+	if(mf=="M")
+	{
+		gmFlex = gt;
+		dgebi("Flex1").src = pic;
+		dgebi("FlexA1").href = dgebi("Flex1").src;
+		dgebi("Flex1").title = gt;
+		dgebi("LabelFlex1").innerHTML = MockUpGT1(gt).replace(/,/g,", ")+"<BR>"+thisKlr+"<BR><I>"+MockUpGT1(splitloci)+"</I>";
+		//additional
+		setColorDescFlex(1,gmFlex);
+	}
+	else if(mf=="F")
+	{	
+		gfFlex = gt;
+		dgebi("Flex2").src = pic;
+		dgebi("FlexA2").href = dgebi("Flex2").src;
+		dgebi("Flex2").title = gt;
+		dgebi("LabelFlex2").innerHTML = MockUpGT1(gt).replace(/,/g,", ")+"<BR>"+thisKlr+"<BR><I>"+MockUpGT1(splitloci)+"</I>";
+		//additional
+		setColorDescFlex(2,gfFlex);
+	}
+	select4later(mf,gt,pic,"USED");
+	//
+}//setLists2
+//
+//override show selected
+function showSelectedJH2()
+{
+	//picture layering will be distorted
+	dgebi('result2Embed').innerHTML='';
+	//
+	var rowheight = 1.5*picsize;
+	var cumheight = startheight+5;
+	//
+	var layTxt = "<TABLE cellspacing=0 ><TR height="+rowheight+">";
+	var gtTxt = "";
+	var klTxt = "";
+	var jpg  = "";
+	var enkl = "";
+	var tijd = "";
+	var txt = "";
+	var mftxt = "";
+	for(h in ArraySelected) //vbkl.length
+	{
+		mf    = ArraySelected[h][0];
+		if(mf=="M") mftxt = "Male";
+		else if(mf=="F") mftxt = "Female";
+		gtTxt = ArraySelected[h][1];
+		klTxt = ArraySelected[h][2];	  
+		jpg   = ArraySelected[h][4]; //.replace(/ /g,"%20");
+		//
+		var currheight = cumheight+(0.1*picsize);
+		cumheight += rowheight;
+		//
+		enkl  = ArraySelected[h][3];
+		tijd  = ArraySelected[h][5];
+		txt   = ArraySelected[h][6];
+		if(ArraySelected[h][7]!="")
+		{
+			txt += getCrossHref(ArraySelected[h][7],tijd);
+		}
+		else
+		{
+			var txt2 = getBreedbookGT(gtTxt);
+			if(txt2!="")
+			{
+				txt += " "+Genotypestxt.replace("s","")+" (Breedbook)"+": <B><Font size=2>"+txt2+"</Font></B>";
+			}
+		}
+		//
+		//hacking imagepath
+		var img1 = "<img style='margin-left:10px' onerror='this.src=\"dead.png\";' src='"+layerapp+"ext="+jpgextension+"&pic="+GetPlaatjeFlexDB(klTxt,mf)+"' height="+picsize+" />";//GetPicLayers(mf,GetPlaatjeFlexDB(klTxt,mf),currheight);
+		//var img1 = "<img src="+jpg+" alt='"+snpy+"' title='"+gtTxt+" | "+klTxt+" ("+enkl+")' width="+picsize+" />";
+		if(showPics==0) img1 = "<B><FONT size=7 title='"+gtTxt+"' >*</FONT></B>";
+		layTxt += "<TD width="+rowheight+">"+img1+"</TD>"+
+		          "<TD><I><B>"+tijd+"</B> "+txt+"</I><BR><FONT size=1>"+MockUpGT1(gtTxt)+"</FONT><BR><B>"+klTxt+" &nbsp; "+enkl+"</B><BR>"+
+				  "<A href=javascript:setLists2('"+mf+"','"+gtTxt+"','"+jpg+"') >Continue with this "+mftxt+"</A></TD></TR>"+
+				  "<TR height="+rowheight+">";		  	  
+	}	
+	layTxt += "<TD></TD></TR></TABLE>"
+	dgebi("result1Embed").innerHTML = layTxt;
+}
+//
+function PictureSize(n)
+{
+	if(picsize > 60 || n > 0) picsize += n;
+	dgebi("picsz").innerHTML = picsize;
+	//dgebi("Flex1").height = picsize;
+	//dgebi("Flex2").height = picsize;
+}
+</script>
+<link id="avast_os_ext_custom_font" href="chrome-extension://eofcbnmajmjmplflapaojjnihcjkigck/common/ui/fonts/fonts.css" rel="stylesheet" type="text/css"></head>
+<body leftmargin="0" topmargin="0" onload="init()" onmouseup="resetMuis()" data-gr-c-s-loaded="true">
+<table>
+<tbody><tr height="25">
+ <td></td> 
+ <th align="middle">Male&nbsp;</th>
+ <td></td>
+ <th align="middle">Female&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="&lt;" onclick="PictureSize(-20);"> Pic Size <span id="picsz"></span><input type="button" value="&gt;" onclick="PictureSize(20);"></th>
+</tr>
+<tr height="25">
+ <td></td> 
+ <td align="middle" height="120"><span id="Mloci"><select id="OM" title="" onchange="goEN(1)"><option value="O/-">O/-</option><option value="o/-">o/-</option></select><select id="BM" title="" onchange="goEN(1)"><option value="B/B">B//B</option><option value="B/b">B//b</option><option value="B/b1">B//b1</option><option value="b/b">b//b</option><option value="b/b1">b//b1</option><option value="b1/b1">b1//b1</option></select><select id="DM" title="" onchange="goEN(1)"><option value="D/D">D//D</option><option value="D/d">D//d</option><option value="d/d">d//d</option></select><select id="CM" title="" onchange="goEN(1)"><option value="C/C">C//C</option><option value="C/cb">C//cb</option><option value="C/cs">C//cs</option><option value="cb/cb">cb//cb</option><option value="cb/cs">cb//cs</option><option value="cs/cs">cs//cs</option></select><br><select id="WM" title="" onchange="goEN(1)"><option value="WS/WS">WS//WS</option><option value="WS/w">WS//w</option><option value="w/w">w//w</option></select><select id="SM" title="" onchange="goEN(1)"><option value="S/S">S//S</option><option value="S/s">S//s</option><option value="s/s">s//s</option></select><select id="AM" title="" onchange="goEN(1)"><option value="A/A">A//A</option><option value="A/a">A//a</option><option value="a/a">a//a</option></select><select id="McM" title="" onchange="goEN(1)"><option value="Mc/Mc">Mc//Mc</option><option value="Mc/mc">Mc//mc</option><option value="mc/mc">mc//mc</option></select><br><select id="TaM" title="" onchange="goEN(1)"><option value="Ta/Ta">Ta//Ta</option><option value="Ta/ta">Ta//ta</option><option value="ta/ta">ta//ta</option></select><select id="SpM" title="" onchange="goEN(1)"><option value="Sp/Sp">Sp//Sp</option><option value="Sp/sp">Sp//sp</option><option value="sp/sp">sp//sp</option></select></span></td>
+ <td>&nbsp;&nbsp;|&nbsp;&nbsp;</td> 
+ <td align="middle"><span id="Floci"><select id="OF" title="" onchange="goEN(2)"><option value="O/O">O//O</option><option value="O/o">O//o</option><option value="o/o">o//o</option></select><select id="BF" title="" onchange="goEN(2)"><option value="B/B">B//B</option><option value="B/b">B//b</option><option value="B/b1">B//b1</option><option value="b/b">b//b</option><option value="b/b1">b//b1</option><option value="b1/b1">b1//b1</option></select><select id="DF" title="" onchange="goEN(2)"><option value="D/D">D//D</option><option value="D/d">D//d</option><option value="d/d">d//d</option></select><select id="CF" title="" onchange="goEN(2)"><option value="C/C">C//C</option><option value="C/cb">C//cb</option><option value="C/cs">C//cs</option><option value="cb/cb">cb//cb</option><option value="cb/cs">cb//cs</option><option value="cs/cs">cs//cs</option></select><br><select id="WF" title="" onchange="goEN(2)"><option value="WS/WS">WS//WS</option><option value="WS/w">WS//w</option><option value="w/w">w//w</option></select><select id="SF" title="" onchange="goEN(2)"><option value="S/S">S//S</option><option value="S/s">S//s</option><option value="s/s">s//s</option></select><select id="AF" title="" onchange="goEN(2)"><option value="A/A">A//A</option><option value="A/a">A//a</option><option value="a/a">a//a</option></select><select id="McF" title="" onchange="goEN(2)"><option value="Mc/Mc">Mc//Mc</option><option value="Mc/mc">Mc//mc</option><option value="mc/mc">mc//mc</option></select><br><select id="TaF" title="" onchange="goEN(2)"><option value="Ta/Ta">Ta//Ta</option><option value="Ta/ta">Ta//ta</option><option value="ta/ta">ta//ta</option></select><select id="SpF" title="" onchange="goEN(2)"><option value="Sp/Sp">Sp//Sp</option><option value="Sp/sp">Sp//sp</option><option value="sp/sp">sp//sp</option></select></span></td>
+ </tr>
+ <tr>
+ <td></td> 
+ <td align="middle">
+ <a id="FlexA1" href="./mantleblackmackereltabby_files/layeredimage.php" target="_blank"><img id="Flex1" src="./mantleblackmackereltabby_files/layeredimage.php" onerror="this.src=&quot;dead.png&quot;" alt="Sorry, no pic yet" title="o/-,B/B,D/D,C/C,w/w,s/s,A/A,Mc/Mc,ta/ta,sp/sp" height="320/"></a><span id="Mnaming"><br> <a href="javascript:naming(&#39;M&#39;)">rename</a></span>
+ </td>
+  <td></td>
+ <td align="middle">
+ <a id="FlexA2" href="./mantleblackmackereltabby_files/layeredimage(1).php" target="_blank"><img id="Flex2" src="./mantleblackmackereltabby_files/layeredimage(1).php" onerror="this.src=&quot;dead.png&quot;" alt="Sorry, no pic yet" title="o/o,B/B,D/D,C/C,WS/w,S/s,A/A,Mc/Mc,ta/ta,sp/sp" height="320/"></a><span id="Fnaming"><br> <a href="javascript:naming(&#39;F&#39;)">rename</a></span>
+ </td>
+ <td><a href="javascript:showSelectedJH2();">Recall selected animals</a><br><br>
+ <a id="altlayout3" href="http://kippenjungle.nl/kruisingFlex.html?MODULE=kruisingFlexJH3.html&amp;DATA=S;Cat%20Genetics;;M;https://niabi6093.github.io/CatGenetics/ImgGen/;png;1,G;O;;S;,G;B;;;,G;D;;;,G;C;;;,G;W;;;,G;S;;;,G;A;;;,G;Mc;;;,G;Ta;;;,G;Sp;;;,A;W;WS;;piebald-;H;tuxedo-;;,A;W;w;;;D;;W;,A;S;S;;high;H;low;;,A;S;s;;;D;;W;,A;C;C;;;D;;W;,A;C;cb;;sepia-;H;mink-;;,A;C;cs;;pointed-;D;;;,A;Mc;Mc;;mackerel;D;;W;,A;Mc;mc;;classic;D;;;,A;Ta;Ta;;ticked;D;;;,A;Ta;ta;;;D;;W;,A;Sp;Sp;;spotted;D;;;,A;Sp;sp;;;D;;W;,A;A;A;;tabby;D;;W;,A;A;a;;self;D;;;,A;O;O;S;ginger;H;_%20tortie-%20red;;,A;O;o;S;;D;;W;,A;B;B;;black;D;;W;,A;B;b;;chocolate;D;;;,A;B;b1;;cinnamon;D;;;,A;D;D;;;D;;W;,A;D;d;;dilute;D;;;,C;RP1;mackerel;ticked;;,C;RP1;classic;ticked;;,C;RP1;spotted;ticked;;,C;RP1;mackerel;spotted;;,C;RP1;classic;spotted;;,C;RM;tabby;;;,C;RP1;red;tortie;tabby%20red;,C;RP1;tortie;piebald;calico;,C;RP;piebald;high;van;,C;RP;tuxedo;high;saddle;,C;RP;piebald;low;harlequin;,C;RP;tuxedo;low;mantle;,C;RP1;tortie;saddle;calico;,C;RP1;tortie;mantle;calico;,C;RP;high;;minimal-;,C;RP;low;;locket-;,C;RP1;tabby;mackerel;mackerel;,C;RP1;tabby;classic;classic;,C;RP1;tabby;ticked;ticked;,C;RP1;tabby;spotted;spotted;,C;RP1;mackerel;self;;,C;RP1;classic;self;;,C;RP1;ticked;self;;,C;RP1;spotted;self;;,C;RP;_;black;black;,C;RP;_;chocolate;chocolate;,C;RP;_;cinnamon;cinnamon;,C;RP1;black;dilute;blue;,C;RP1;chocolate;dilute;lilac;,C;RP1;cinnamon;dilute;fawn;,C;RP1;black;ginger;;,C;RP1;chocolate;ginger;;,C;RP1;cinnamon;ginger;;,C;RP;ginger;;red;,C;RP1;red;dilute;cream;,C;RM;dilute;;;,C;RM;self;;;" style="display: none"><b><font size="4">* </font></b>Original Flex module</a><br>
+ <a id="altlayout1" href="http://kippenjungle.nl/kruisingFlexJH.html?MODULE=kruisingFlexJH3.html&amp;DATA=S;Cat%20Genetics;;M;https://niabi6093.github.io/CatGenetics/ImgGen/;png;1,G;O;;S;,G;B;;;,G;D;;;,G;C;;;,G;W;;;,G;S;;;,G;A;;;,G;Mc;;;,G;Ta;;;,G;Sp;;;,A;W;WS;;piebald-;H;tuxedo-;;,A;W;w;;;D;;W;,A;S;S;;high;H;low;;,A;S;s;;;D;;W;,A;C;C;;;D;;W;,A;C;cb;;sepia-;H;mink-;;,A;C;cs;;pointed-;D;;;,A;Mc;Mc;;mackerel;D;;W;,A;Mc;mc;;classic;D;;;,A;Ta;Ta;;ticked;D;;;,A;Ta;ta;;;D;;W;,A;Sp;Sp;;spotted;D;;;,A;Sp;sp;;;D;;W;,A;A;A;;tabby;D;;W;,A;A;a;;self;D;;;,A;O;O;S;ginger;H;_%20tortie-%20red;;,A;O;o;S;;D;;W;,A;B;B;;black;D;;W;,A;B;b;;chocolate;D;;;,A;B;b1;;cinnamon;D;;;,A;D;D;;;D;;W;,A;D;d;;dilute;D;;;,C;RP1;mackerel;ticked;;,C;RP1;classic;ticked;;,C;RP1;spotted;ticked;;,C;RP1;mackerel;spotted;;,C;RP1;classic;spotted;;,C;RM;tabby;;;,C;RP1;red;tortie;tabby%20red;,C;RP1;tortie;piebald;calico;,C;RP;piebald;high;van;,C;RP;tuxedo;high;saddle;,C;RP;piebald;low;harlequin;,C;RP;tuxedo;low;mantle;,C;RP1;tortie;saddle;calico;,C;RP1;tortie;mantle;calico;,C;RP;high;;minimal-;,C;RP;low;;locket-;,C;RP1;tabby;mackerel;mackerel;,C;RP1;tabby;classic;classic;,C;RP1;tabby;ticked;ticked;,C;RP1;tabby;spotted;spotted;,C;RP1;mackerel;self;;,C;RP1;classic;self;;,C;RP1;ticked;self;;,C;RP1;spotted;self;;,C;RP;_;black;black;,C;RP;_;chocolate;chocolate;,C;RP;_;cinnamon;cinnamon;,C;RP1;black;dilute;blue;,C;RP1;chocolate;dilute;lilac;,C;RP1;cinnamon;dilute;fawn;,C;RP1;black;ginger;;,C;RP1;chocolate;ginger;;,C;RP1;cinnamon;ginger;;,C;RP;ginger;;red;,C;RP1;red;dilute;cream;,C;RM;dilute;;;,C;RM;self;;;"><b><font size="4">* </font></b>Original Hoffman module</a><br>
+ <a id="altlayout2" href="http://kippenjungle.nl/kruisingFlexRazek2.html?MODULE=kruisingFlexJH3.html&amp;DATA=S;Cat%20Genetics;;M;https://niabi6093.github.io/CatGenetics/ImgGen/;png;1,G;O;;S;,G;B;;;,G;D;;;,G;C;;;,G;W;;;,G;S;;;,G;A;;;,G;Mc;;;,G;Ta;;;,G;Sp;;;,A;W;WS;;piebald-;H;tuxedo-;;,A;W;w;;;D;;W;,A;S;S;;high;H;low;;,A;S;s;;;D;;W;,A;C;C;;;D;;W;,A;C;cb;;sepia-;H;mink-;;,A;C;cs;;pointed-;D;;;,A;Mc;Mc;;mackerel;D;;W;,A;Mc;mc;;classic;D;;;,A;Ta;Ta;;ticked;D;;;,A;Ta;ta;;;D;;W;,A;Sp;Sp;;spotted;D;;;,A;Sp;sp;;;D;;W;,A;A;A;;tabby;D;;W;,A;A;a;;self;D;;;,A;O;O;S;ginger;H;_%20tortie-%20red;;,A;O;o;S;;D;;W;,A;B;B;;black;D;;W;,A;B;b;;chocolate;D;;;,A;B;b1;;cinnamon;D;;;,A;D;D;;;D;;W;,A;D;d;;dilute;D;;;,C;RP1;mackerel;ticked;;,C;RP1;classic;ticked;;,C;RP1;spotted;ticked;;,C;RP1;mackerel;spotted;;,C;RP1;classic;spotted;;,C;RM;tabby;;;,C;RP1;red;tortie;tabby%20red;,C;RP1;tortie;piebald;calico;,C;RP;piebald;high;van;,C;RP;tuxedo;high;saddle;,C;RP;piebald;low;harlequin;,C;RP;tuxedo;low;mantle;,C;RP1;tortie;saddle;calico;,C;RP1;tortie;mantle;calico;,C;RP;high;;minimal-;,C;RP;low;;locket-;,C;RP1;tabby;mackerel;mackerel;,C;RP1;tabby;classic;classic;,C;RP1;tabby;ticked;ticked;,C;RP1;tabby;spotted;spotted;,C;RP1;mackerel;self;;,C;RP1;classic;self;;,C;RP1;ticked;self;;,C;RP1;spotted;self;;,C;RP;_;black;black;,C;RP;_;chocolate;chocolate;,C;RP;_;cinnamon;cinnamon;,C;RP1;black;dilute;blue;,C;RP1;chocolate;dilute;lilac;,C;RP1;cinnamon;dilute;fawn;,C;RP1;black;ginger;;,C;RP1;chocolate;ginger;;,C;RP1;cinnamon;ginger;;,C;RP;ginger;;red;,C;RP1;red;dilute;cream;,C;RM;dilute;;;,C;RM;self;;;" style="display: none"><b><font size="4">* </font></b>Radiobutton layout</a></td>
+</tr>
+<tr height="70">
+ <td></td> 
+ <td align="middle"><label id="LabelFlex1">o- BB DD CC ww ss AA McMc tata spsp<br><b> mackerel black </b><br><i></i></label></td>
+  <td>&nbsp;&nbsp;|&nbsp;&nbsp;</td>
+ <td align="middle"><label id="LabelFlex2">oo BB DD CC WSw Ss AA McMc tata spsp<br><b> mantle- mackerel black </b><br><i></i></label></td>
+ <td></td>
+</tr>
+<tr height="20"><td colspan="5">
+<input type="button" value="Calculate Cross" onclick="KruisEmbed1();">
+<input type="button" value="Punnett Square" onclick="KruisMatrix2();">
+<input type="button" value="Reset" title="Reset to wildtype parent genotypes" onclick="listsReset();">
+<input id="HideGenotype" type="checkbox" onclick="showSummary();">Hide Genotypes&nbsp;
+<input id="SetMockLevel" type="checkbox" onclick="setMockLevel();goEN(1);goEN(2);" onchange="setMockLevel();goEN(1);goEN(2);">Short Notation&nbsp;
+<a href="javascript:ShowAgreeHTML()"><span style="background:yellow;padding:5px"><b>©Pics</b></span></a>&nbsp;<a target="_blank" href="http://kippenjungle.nl/Overzicht.htm#intro">Help</a>&nbsp;
+<a target="_blank" href="http://kippenjungle.nl/Henk69_NL.html">Henk69.nl</a>
+</td></tr>
+</tbody></table>
+<span id="result1Embed">
+</span><br>
+<span id="result2Embed">
+</span><br><span id="span1"></span>
+<br>
+<span id="geneInfo"><table><tbody><tr><td>&nbsp;</td><td bgcolor="pink">O:</td><td></td><td bgcolor="yellow"> <b>O</b>=ginger <span title="Effect if Single Factor (SF)">[_ tortie- red]</span>  </td><td>Sex-linked / Geslachtsgebonden</td></tr><tr><td>&nbsp;</td><td bgcolor="pink">B:</td><td></td><td bgcolor="yellow"> <b>B</b>=black <b>b</b>=chocolate <b>b1</b>=cinnamon</td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">D:</td><td></td><td bgcolor="yellow">  <b>d</b>=dilute</td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">C:</td><td></td><td bgcolor="yellow">  <b>cb</b>=sepia- <span title="Effect if Single Factor (SF)">[mink-]</span>  <b>cs</b>=pointed-</td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">W:</td><td></td><td bgcolor="yellow"> <b>WS</b>=piebald- <span title="Effect if Single Factor (SF)">[tuxedo-]</span>  </td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">S:</td><td></td><td bgcolor="yellow"> <b>S</b>=high <span title="Effect if Single Factor (SF)">[low]</span>  </td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">A:</td><td></td><td bgcolor="yellow"> <b>A</b>=tabby <b>a</b>=self</td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">Mc:</td><td></td><td bgcolor="yellow"> <b>Mc</b>=mackerel <b>mc</b>=classic</td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">Ta:</td><td></td><td bgcolor="yellow"> <b>Ta</b>=ticked </td><td></td></tr><tr><td>&nbsp;</td><td bgcolor="pink">Sp:</td><td></td><td bgcolor="yellow"> <b>Sp</b>=spotted </td><td></td></tr></tbody></table></span>             
+<br>
+<a id="wizlink" target="_blank" href="http://kippenjungle.nl/WizardFlex2.html?MODULE=kruisingFlexJH3.html&amp;DATA=S;Cat%20Genetics;;M;https://niabi6093.github.io/CatGenetics/ImgGen/;png;1,G;O;;S;,G;B;;;,G;D;;;,G;C;;;,G;W;;;,G;S;;;,G;A;;;,G;Mc;;;,G;Ta;;;,G;Sp;;;,A;W;WS;;piebald-;H;tuxedo-;;,A;W;w;;;D;;W;,A;S;S;;high;H;low;;,A;S;s;;;D;;W;,A;C;C;;;D;;W;,A;C;cb;;sepia-;H;mink-;;,A;C;cs;;pointed-;D;;;,A;Mc;Mc;;mackerel;D;;W;,A;Mc;mc;;classic;D;;;,A;Ta;Ta;;ticked;D;;;,A;Ta;ta;;;D;;W;,A;Sp;Sp;;spotted;D;;;,A;Sp;sp;;;D;;W;,A;A;A;;tabby;D;;W;,A;A;a;;self;D;;;,A;O;O;S;ginger;H;_%20tortie-%20red;;,A;O;o;S;;D;;W;,A;B;B;;black;D;;W;,A;B;b;;chocolate;D;;;,A;B;b1;;cinnamon;D;;;,A;D;D;;;D;;W;,A;D;d;;dilute;D;;;,C;RP1;mackerel;ticked;;,C;RP1;classic;ticked;;,C;RP1;spotted;ticked;;,C;RP1;mackerel;spotted;;,C;RP1;classic;spotted;;,C;RM;tabby;;;,C;RP1;red;tortie;tabby%20red;,C;RP1;tortie;piebald;calico;,C;RP;piebald;high;van;,C;RP;tuxedo;high;saddle;,C;RP;piebald;low;harlequin;,C;RP;tuxedo;low;mantle;,C;RP1;tortie;saddle;calico;,C;RP1;tortie;mantle;calico;,C;RP;high;;minimal-;,C;RP;low;;locket-;,C;RP1;tabby;mackerel;mackerel;,C;RP1;tabby;classic;classic;,C;RP1;tabby;ticked;ticked;,C;RP1;tabby;spotted;spotted;,C;RP1;mackerel;self;;,C;RP1;classic;self;;,C;RP1;ticked;self;;,C;RP1;spotted;self;;,C;RP;_;black;black;,C;RP;_;chocolate;chocolate;,C;RP;_;cinnamon;cinnamon;,C;RP1;black;dilute;blue;,C;RP1;chocolate;dilute;lilac;,C;RP1;cinnamon;dilute;fawn;,C;RP1;black;ginger;;,C;RP1;chocolate;ginger;;,C;RP1;cinnamon;ginger;;,C;RP;ginger;;red;,C;RP1;red;dilute;cream;,C;RM;dilute;;;,C;RM;self;;;">Adjust this calculator with the Design Wizard</a><br>
+<br>
+</body></html>
