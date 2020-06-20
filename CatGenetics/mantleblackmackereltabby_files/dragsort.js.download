@@ -1,0 +1,167 @@
+/**
+*
+*  Unselectable text
+*  http://www.webtoolkit.info/
+*
+**/
+var Unselectable = { 
+    enable : function(e) {
+        var e = e ? e : window.event; 
+        if (e.button != 1) {
+            if (e.target) {
+                var targer = e.target;
+            } else if (e.srcElement) {
+                var targer = e.srcElement;
+            }
+ 
+            var targetTag = (targer.tagName+"").toLowerCase();
+            if (1==1 ||targetTag == "th" || targetTag=="font" || targetTag=="font") {
+                return false;
+            }
+        }
+    }, 
+    disable : function () {
+        return true;
+    } 
+}
+if (typeof(document.onselectstart) != "undefined") {
+    document.onselectstart = Unselectable.enable;
+} else {
+    document.onmousedown = Unselectable.enable;
+    document.onmouseup = Unselectable.disable;
+}
+//
+var colArray  = new Array();
+var dataArray = new Array();
+var spanid    = "span1";
+var captiontxt = "";
+var captiontxt2 = " &nbsp; <FONT size=1>(drag columnheader to re-order, click header to sort, drag header here to hide)</FONT> &nbsp; ";
+var muisitem = "";
+var muisdown = "";
+var muisup   = "";
+//
+function setDown(nr)
+{
+            muisdown=nr;
+}
+function setMove(nr)
+{
+            muisitem=nr;
+}
+function setUp(nr)
+{
+            muisup=nr;
+}
+function showMuis()
+{
+            //alert("down="+muisdown+"; up="+muisup+"; item="+muisitem+".");
+            if(muisdown != "" && muisup != "")
+            {           
+                        if(muisdown != muisup)
+                        {
+                                   orderTab(muisdown,muisup);
+								   fillTab();
+                        }
+                        else if(muisdown == muisup)
+                        {
+                                   sortTab(muisdown);
+								   fillTab();
+                        }
+            }
+			resetMuis();
+}
+function resetMuis() //call from body.onMouseUp also
+{
+			muisdown = "";
+			muisup = "";
+			muisitem = "";
+}
+function orderTab(nr1,nr2)
+{
+	for(var r in dataArray)
+	{
+		var colval = dataArray[r][nr1];
+		var colName = colArray[nr1];
+		if(nr1 > nr2)//move forward
+		{
+			for(var c = nr1;c>nr2;c--)
+			{
+				dataArray[r][c] = dataArray[r][c-1];
+				if(r==0) colArray[c]     = colArray[c-1];
+			}
+		}
+		else if(nr2 > nr1)//move backward
+		{
+			for(var c = nr1;c<nr2;c++)
+			{
+				dataArray[r][c] = dataArray[r][c+1];
+				if(r==0) colArray[c]     = colArray[c+1];
+			}
+		}
+		dataArray[r][nr2] = colval;
+		if(r==0) colArray[nr2]     = colName;
+	}
+}
+var lastsort = "";
+var lastscend = "";
+function sortTab(nr)
+{
+	for(var r in dataArray)
+	{
+		if(dataArray[r][nr] != "") dataArray[r][0] = dataArray[r][nr];
+		else dataArray[r][0] = "";
+	}
+	if( lastsort != nr || lastscend == "desc")
+	{
+		dataArray.sort();
+		lastscend = "asc";
+	}
+	else
+	{
+		dataArray.reverse();
+		lastscend = "desc";
+	}
+	lastsort = nr;
+}
+function hideCol()
+{
+	if(muisdown != "")
+	{
+		colArray[muisdown] = "";
+		for(var r in dataArray)
+		{
+			dataArray[r][muisdown]="";
+		}
+	}
+	fillTab();
+	resetMuis();
+}
+function fillTab()
+{
+	var tabHTML = "<table bgcolor=pink ><tr><td colspan="+colArray.length+" bgcolor=orange onMouseUp=hideCol();>"+captiontxt+captiontxt2+"</td></tr><tr onMouseUp=showMuis(); >";
+	for(var h in colArray)
+	{
+		if(h>=1)
+		{
+			tabHTML += "<th id='K"+h+"' class='TDHEAD' onMouseDown=setDown("+h+"); onMouseUp=setUp("+h+"); >"+colArray[h]+"</th>";
+		}
+	}
+	//
+	tabHTML+="</tr>";
+	//
+	for(var d in dataArray)
+	{
+		tabHTML+="<tr>";
+		for(var c in dataArray[d])
+		{
+			if(c>=1)
+			{
+				tabHTML += "<td id='R"+d+"K"+c+"' bgcolor=white  >"+dataArray[d][c]+"</td>";
+			}
+		}	
+		tabHTML+="</tr>";
+	}
+	tabHTML += "</table>";
+	document.getElementById(spanid).innerHTML = tabHTML;
+}
+//

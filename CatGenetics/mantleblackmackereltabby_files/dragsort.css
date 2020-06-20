@@ -1,0 +1,3 @@
+TH.TDHEAD {color:black; background-color:yellow}
+TH.TDHEAD::SELECTION {color:black; background-color:yellow}
+TH.TDHEAD::-MOZ-SELECTION {color:black; background-color:yellow}

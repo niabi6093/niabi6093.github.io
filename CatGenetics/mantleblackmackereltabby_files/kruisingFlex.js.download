@@ -1,0 +1,1228 @@
+<!-- hide this script from non-javascript-enabled browsers
+//if you use this external script in your webpage, also use kruising.js !
+//For new species suffix the names with a speciesspecific term to avoid uniqueness conflicts with the other external js scripts
+//
+//Genetic locus/genes/alleles data of other species
+var listitemsFlex = new Array();
+var listFdefsFlex = new Array();
+var listMdefsFlex = new Array();
+var listHetsFlex = new Array();
+//new for flex
+var showPics = 1;
+//
+var words2remove = new Array();
+var querystring = "";
+
+var moduleFlex = "";
+var geneInfoHTML = "Genetic information goes here";
+var jpgextension = "JPG";
+var flexModule= "";
+var OddGender = "";
+var listLociInfo = new Array(); //field 0 locus ; field1 name ; field2 sexlinked=S ; field3 ?
+var listRecessiveAlleles = new Array(); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 ?
+var listAllAlleles = new Array(); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+var listCombinations = new Array(); //field 0 type = RP RM ; field1 word1 ; field2 word2 ; field3 substitutionword
+//only multiple alleles per locus have to be enlisted here
+var AllelesFlex = new Array();
+var AllelesFlexSuper = new Array();
+//translate
+var nlwrdsFlex = "wit;drager van";
+var enwrdsFlex = "white;carrying";
+//Fields to keep the parents genotypes
+var defgt  = "";
+//
+//dynamical locuslists 
+var listoptionsMFlex  = new Array();
+var listoptionsMFlex2 = new Array();
+var listoptionsFFlex  = new Array();
+var listoptionsFFlex2 = new Array();
+//
+function GetKleurFlex(mf,gt)
+{
+	var klr = "";
+	var prevdom = "";
+	//
+	for(aa in listAllAlleles)
+	{	//field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic 
+		var dom  = listAllAlleles[aa][4];
+		var sexl = listAllAlleles[aa][2];
+		var gen  = listAllAlleles[aa][0];//locus? usage
+		var symb = listAllAlleles[aa][1];
+		var efft = listAllAlleles[aa][3];
+		var effs = listAllAlleles[aa][5];
+		var epis = listAllAlleles[aa][6];
+		var brk = 0;
+		//
+		if (prevdom==gen)
+		{
+		//do nothing this gene is handled
+		}
+		else if(prevdom==gen+"-H" && dom != "H")
+		{
+			//Only other semi-dominants affect semi-dominants ???
+		}
+		else if(dom=="D" && GenAanwezig(symb,gt)>=1)
+		{
+			if(efft!="") klr += " "+efft;
+			//
+			prevdom = gen;
+			//
+			if(epis=="E") brk = 1;//get out of loop
+			else if(epis=="E2" && GenAanwezig(symb,gt)==2) brk = 1;
+		}
+		else if(dom=="H" && (GenAanwezig(symb,gt)==2 || (GenAanwezig(symb,gt)==1 && sexl=="S" && mf==OddGender)))
+		{
+			if(efft!="") klr += " "+efft;
+			//
+			prevdom = gen;
+			if(epis=="E") brk = 1;
+			else if(epis=="E2" && GenAanwezig(symb,gt)==2) brk = 1;
+		}
+		else if(dom=="H" && GenAanwezig(symb,gt)==1 )
+		{
+			if(symb!=gen+"?" && GenAanwezig(gen+"?",gt)==1)
+			{
+				klr += " ("+effs+"?"+efft+"?)";
+				prevdom = gen;
+			}
+			else
+			{
+				if(effs!="") klr += " "+effs;
+				prevdom = gen+"-H";
+			}
+			//
+			if(epis=="E") brk = 1;
+			else if(epis=="E2" && GenAanwezig(symb,gt)==2) brk = 1;
+		}
+		else if(dom=="R" && (GenAanwezig(symb,gt)==2 || (GenAanwezig(symb,gt)==1 && sexl=="S" && mf==OddGender)))
+		{
+			if(efft!="") klr += " "+efft;
+			//
+			prevdom = gen;
+			if(epis=="E") brk = 1;
+			else if(epis=="E2") brk = 1;
+		}
+		else if(symb!=gen+"?" && GenAanwezig(symb,gt)==1 && GenAanwezig(gen+"?",gt)==1)
+		{
+			if(efft=="")
+			{
+				klr += " ("+gen+"-locus?)";
+			}
+			else
+			{
+				klr += " ("+efft+"?)";
+			}
+			//
+			prevdom = gen;
+		}
+		else if(dom=="R" && GenAanwezig(symb,gt)==1)
+		{
+			//order of dominance
+			//
+			if(efft!="") klr += " "+efft;
+			//
+			prevdom = gen;
+			if(epis=="E") brk = 1;
+		}
+		else if( symb!=gen+"?" &&
+				(GenAanwezig(gen+"?",gt)==2 || 
+					(GenAanwezig(gen+"?",gt)==1 && sexl=="S" && mf==OddGender)) ) 
+		{
+			klr += " ("+gen+"-locus?)";
+			//
+			prevdom = gen;
+		}
+		if(brk==1) break;
+	}
+	//
+	for(rr in listCombinations)
+	{
+		if(listCombinations[rr][0]=="RP")
+		{
+			if(klr.indexOf(listCombinations[rr][1])>=0 && klr.indexOf(listCombinations[rr][2])>=0)
+			{
+				klr = klr.replace(listCombinations[rr][2],"");//remove second word
+				klr = klr.replace(listCombinations[rr][1],listCombinations[rr][3]);//replace first word
+			}
+		}
+		else if(listCombinations[rr][0]=="RP1")
+		{
+			if(klr.indexOf(listCombinations[rr][1])>=0 && klr.indexOf(listCombinations[rr][2])>=0)
+			{
+				klr = klr.replace(listCombinations[rr][1],listCombinations[rr][3]);//replace first word
+			}
+		}
+		else if(listCombinations[rr][0]=="RM")
+		{
+			while(klr.indexOf(listCombinations[rr][1])>=0)
+			{
+				klr = klr.replace(listCombinations[rr][1],"");
+			}
+		}
+		else if(listCombinations[rr][0]=="RW") //remove wildcard special action
+		{
+			for(wc in words2remove)
+			{
+				if(klr.indexOf(" "+words2remove[wc])>=0)
+				{
+					klr = klr.replace(" "+words2remove[wc],"");
+				}
+			}
+		}
+		else if(listCombinations[rr][0]=="EC") //removes on, and replaces epistatic combination
+		{
+			if(klr.indexOf(listCombinations[rr][1])>=0 && klr.indexOf(listCombinations[rr][2])>=0)
+			{
+				klr = klr.replace(listCombinations[rr][2],"");//remove second word
+				klr = klr.replace(listCombinations[rr][1],listCombinations[rr][3]);//replace first word
+				//
+				for(wc in words2remove)
+				{
+					if(klr.indexOf(" "+words2remove[wc])>=0)
+					{
+						klr = klr.replace(" "+words2remove[wc],"");
+					}
+				}
+			}
+		}
+		else if(listCombinations[rr][0]=="NVL" && klr.replace(/ /g,"")=="")
+		{
+			klr = listCombinations[rr][3];
+		}
+		klr = klr.replace(/  /g," ");
+	}
+	//
+	if(klr.replace(/ /g,"")=="") return "";
+	//
+	klr = " "+klr+" ";
+	//
+	while(klr.indexOf("  ")>=0)
+	{
+		klr = klr.replace(/  /g," ");
+	}
+	//
+	return klr;
+}
+//
+function GetSplitFlex(mf,gtu)
+{
+	var splitloci = "";
+	var gt = GetGTordered(mf,gtu);//move else?
+	//oogkleur
+	for(ra in listRecessiveAlleles)
+	{
+		if( (listRecessiveAlleles[ra][2] != "S" || (mf!=OddGender && listRecessiveAlleles[ra][2] == "S")) && GenAanwezig(listRecessiveAlleles[ra][1],gt)==1  )
+		{
+			//console.log(gt);
+			if((gt+",").indexOf("/"+listRecessiveAlleles[ra][1]+",")>0)
+			{
+				splitloci += " "+listRecessiveAlleles[ra][3]+"("+listRecessiveAlleles[ra][1]+")";
+			}
+		}
+	}
+	if (splitloci != "") return "split: "+splitloci;
+	else return "";
+}
+//pic
+function GetPlaatjeFlexDB(klr,mf)
+{
+	//Dominant gene/allele should be first allele and dominance should be complete
+	var mfprefix = "";
+	if(showPics == 2 && (mf=="M" || mf=="F")) mfprefix = mf;
+	return jpgpath+mfprefix+klr.replace(/ /g,"").replace(/,/g,"")+"."+jpgextension;
+}
+//
+function prepFlex(qs)
+{
+	geneInfoHTML = "";
+	var tmp = decompress(qs.replace(/%20/g," "));
+	tmp=unescape(tmp);
+	//cut up querystring and recreate genetic information
+	var qs0 = tmp.split('&');
+	//google cache bug
+	if(tmp.indexOf("%5E")>=0) qs0 = tmp.replace(/%5E/g,"^").split('&');//
+	//
+	for(ss in qs0)
+	{
+		if(qs0[ss].indexOf("MODULE=")>=0)
+		{
+			moduleFlex = qs0[ss].split('=')[1];
+		}
+		else if(qs0[ss].indexOf("DATA=")>=0)
+		{
+			querystring = qs0[ss]; //remember
+			//
+			prepFlex1(qs0[ss].split('=')[1]);
+		}
+		else if(qs0[ss].indexOf("ID=")>=0)//shortlink
+		{
+			techname = qs0[ss].split('=')[1];
+			//if(dgebi('helplink'))
+			//{
+			//	dgebi('helplink').href = "Overzicht.htm#"+techname;
+			//}
+			if(techname){
+				geneInfoHTML += "<div style='background-color:lightgray;border: grey 3px solid;padding:5px;margin-top: 3px;'>"+
+					"NOTE: To link to this calculator and not miss updates use (click to select): "+
+					"<b id='shortlinkOrig' style='font-size:16px' onclick='selectText(\"shortlinkOrig\")'>http://kippenjungle.nl/Overzicht.htm?run="+techname.replace("4IE","")+
+					"</b></div>"+
+					"<div style='background-color:lightgreen;border: green 3px solid;padding:5px;margin-top: 3px;'>"+
+					"NOTE: For more information and related calculators see: "+
+					"<b style='font-size:16px'><a target='_blank' href='Overzicht.htm#"+techname.replace("4IE","")+
+					"'>Introduction</a></b></div>"+
+					"<div style='background-color:pink;border: red 3px solid;padding:5px;margin-top: 3px;'>"+
+					"NOTE: For any picture and genetic information credits see: "+
+					"<b style='font-size:16px'>&copy; <a target='_blank' href='Overzicht.htm?Credits#"+techname.replace("4IE","")+ //"Credits"+
+					"'>Credits</a></b></div>"+
+					"<p>&nbsp;</p>"
+					;
+			}
+		}
+	}
+	//
+	geneInfoHTML += "<TABLE>";
+	//listitemsFlex;
+	for(lg in listLociInfo)//field 0 locus ; field1 name ; field2 sexlinked=S ; field3 ?
+	{
+		var symb = listLociInfo[lg][0];
+		listitemsFlex[listitemsFlex.length] = symb;		
+		//
+		geneInfoHTML += "<TR><TD>&nbsp;</TD><TD bgcolor=pink>"+symb+":</TD><TD>"+listLociInfo[lg][1]+"</TD><TD bgcolor=yellow>";
+		//
+		var wt = "";
+		var sexl = listLociInfo[lg][2];
+		var tempAlleles = new Array();
+		var het = "-";
+		//
+		for(la in listAllAlleles)//field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+		{
+			if(lg==0)//9-11-2008
+			{
+				AllelesFlex[AllelesFlex.length] = listAllAlleles[la][1];
+				if(listAllAlleles[la][1].indexOf("^")>=0) AllelesFlexSuper[AllelesFlexSuper.length] = listAllAlleles[la][1];
+			}
+			//
+			if(listAllAlleles[la][0]==symb)
+			{
+				tempAlleles[tempAlleles.length] = listAllAlleles[la];
+				if(listAllAlleles[la][6]=="W")
+				{
+					wt = listAllAlleles[la][1];
+				}
+				if(listAllAlleles[la][4]=="H")
+				{
+					het = "+";
+				}
+			}
+		}
+		//
+		listHetsFlex[listHetsFlex.length] = het;
+		//
+		if (sexl=="S" && OddGender=="M")
+		{
+			listMdefsFlex[listMdefsFlex.length] = wt+"/-"; 
+			listFdefsFlex[listFdefsFlex.length] = wt+"/"+wt;
+		}
+		else if (sexl=="S" && OddGender=="F")
+		{
+			listMdefsFlex[listMdefsFlex.length] = wt+"/"+wt; 
+			listFdefsFlex[listFdefsFlex.length] = wt+"/-";
+		}
+		else 
+		{
+			listMdefsFlex[listMdefsFlex.length] = wt+"/"+wt; 
+			listFdefsFlex[listFdefsFlex.length] = wt+"/"+wt;
+		}
+		//
+		var lstoptidx = listoptionsMFlex.length;
+		listoptionsMFlex [lstoptidx] = new Array();
+		listoptionsMFlex2[lstoptidx] = new Array();
+		listoptionsFFlex [lstoptidx] = new Array();
+		listoptionsFFlex2[lstoptidx] = new Array();
+		for(ta in tempAlleles)
+		{
+			var symba = tempAlleles[ta][1];
+			//
+			geneInfoHTML += " "+(tempAlleles[ta][3]!="" ? "<b>"+(tempAlleles[ta][1].indexOf("^")>=0 ? tempAlleles[ta][1].replace("^","<sup>") + "</sup>" : tempAlleles[ta][1])+"</b>=" : "")+tempAlleles[ta][3];
+			if(tempAlleles[ta][5] != "") geneInfoHTML += " <span title='Effect if Single Factor (SF)' >["+tempAlleles[ta][5]+"]</span> ";
+			//
+			for(tb in tempAlleles)
+			{
+				var symbb = tempAlleles[tb][1];				
+				//
+				if(1*tb >= 1*ta)
+				{
+					if (sexl!="S" || OddGender!="M")
+					{
+						listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symba+"/"+symbb;
+						listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symba+"//"+symbb;
+					}
+					if (sexl!="S" || OddGender!="F")
+					{
+						listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length] = symba+"/"+symbb;
+						listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symba+"//"+symbb;
+					}
+				}
+			}
+			if (sexl=="S" && OddGender=="M")
+			{
+				listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symba+"/-";
+				listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symba+"/-";
+			}
+			if (sexl=="S" && OddGender=="F")
+			{
+				listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length] =  symba+"/-";
+				listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symba+"/-";
+			}                                                              
+		}
+		if (sexl!="S") sexl = "";
+		else sexl = "Sex-linked / Geslachtsgebonden";
+		geneInfoHTML += "</TD><TD>"+sexl+"</TD></TR>";
+	}
+	geneInfoHTML += "</TABLE>";
+}
+function prepFlex1(qs1)
+{
+	var qs2 = new Array();
+	qs2 = qs1.split(',');
+	for(ks in qs2)
+	{
+		var qs3 = (qs2[ks]+";;;;;;;;;").split(';'); //21-11-2010 trailing to be sure
+		//
+		if(qs3[0]=="S")//general: title # species # odd chromosomed gender # jpgpath # jpgextension #
+		{
+			if(qs3[1]!="") 
+			{
+				document.title = qs3[1];
+				cookieName=qs3[1].replace(/ /g,"");
+			}
+			species   = qs3[2]; //"gallus"
+			OddGender = qs3[3]; //M or F
+			if(qs3[4]!="") jpgpath   = qs3[4];
+			jpgextension = qs3[5];
+			//
+			if(qs3[6]=="0") showPics = 0;
+			else if(qs3[6]=="2") showPics = 2;
+		}
+		else if(qs3[0]=="G")//gene locus
+		{
+			listLociInfo[listLociInfo.length] = new Array(qs3[1],qs3[2],qs3[3],qs3[4]); //field 0 locus ; field1 name ; field2 sexlinked=S ; field3 ?
+		}
+		else if(qs3[0]=="A")//allele
+		{
+			listAllAlleles[listAllAlleles.length] = new Array(qs3[1],qs3[2],qs3[3],qs3[4],qs3[5],qs3[6],qs3[7],qs3[8]); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+			if(qs3[5]=="R")
+			{
+				if(qs3[4]!="") listRecessiveAlleles[listRecessiveAlleles.length] = new Array(qs3[1],qs3[2],qs3[3],qs3[4]); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect
+			}
+			if(qs3[8]=="1") //special action
+			{
+				if(qs3[4]!="") words2remove[words2remove.length] = qs3[4];
+				if(qs3[6]!="") words2remove[words2remove.length] = qs3[6];
+			}
+		}
+		else if(qs3[0]=="C")//combination
+		{
+			listCombinations[listCombinations.length] = new Array(qs3[1],qs3[2],qs3[3],qs3[4],qs3[5]); //field 0 type = RP RM ; field1 word1 ; field2 word2 ; field3 substitutionword
+		}
+	}
+}
+//
+function setMammal(MaleGT,FemaleGT)
+{
+	//Gender?
+	var Mammal = "?";
+	if(MaleGT.indexOf(",-")>=0 || MaleGT.indexOf("-,")>=0 || MaleGT.indexOf("/-")>=0 || MaleGT.indexOf("-/")>=0)
+	{
+		Mammal = "Y";
+	}
+	if(FemaleGT.indexOf(",-")>=0 || FemaleGT.indexOf("-,")>=0 || FemaleGT.indexOf("/-")>=0 || FemaleGT.indexOf("-/")>=0)
+	{
+		if(Mammal=="Y")
+		{
+			Mammal = "?";
+		}
+		else
+		{
+			Mammal = "N";
+		}
+	}
+	return Mammal;
+}
+//
+function setMF(Mammal,MaleGT,FemaleGT)
+{
+	var mf = "?";
+	if(Mammal=="Y")
+	{
+		mf = "F";
+	}
+	else if(Mammal=="N")
+	{
+		mf = "M";
+	}
+	if(Mammal=="N" && (FemaleGT.indexOf(',-')>=0 || FemaleGT.indexOf('-,')>=0 || FemaleGT=='-')) 
+	{
+		mf = "F";
+	}
+	else if(Mammal=="Y" && (MaleGT.indexOf(',-')>=0 || MaleGT.indexOf('-,')>=0 || MaleGT=='-'))
+	{
+		mf = "M";
+	}
+	return mf;
+}
+function setMF2(Mammal,gt)
+{
+	var mf = "Undetermined";
+	if(Mammal=="Y")
+	{
+		mf = "F";
+	}
+	else if(Mammal=="N")
+	{
+		mf = "M";
+	}
+	if(Mammal=="N" && GenAanwezig("-",gt)>=1) 
+	{
+		mf = "F";
+	}
+	else if(Mammal=="Y" && GenAanwezig("-",gt)>=1)
+	{
+		mf = "M";
+	}
+	return mf;
+}
+
+//
+function initFlex()
+{
+	//set global variables:
+	Alleles0  = AllelesFlex;
+	Alleles0Super = AllelesFlexSuper;
+	listitems = listitemsFlex;
+	listMdefs = listMdefsFlex;
+	listFdefs = listFdefsFlex;
+	//nlwrd     = nlwrdsFlex.split(';');
+	//enwrd     = enwrdsFlex.split(';');
+	listHets  = listHetsFlex;
+	//
+}         
+//
+//Convert to Chicken-loci
+function initFlexConvert2loc()
+{
+	for(a33 in listitemsFlex)
+	{
+		if(listitemsFlex[a33].substring(0,1)==listitemsFlex[a33])
+		{
+			listitemsFlex[a33] += "loc";
+		}
+	}
+}
+//
+function initFlex2()
+{
+	//set global variables:
+	for(a1 in AllelesFlex)
+	{
+		Alleles0[Alleles0.length]=AllelesFlex[a1];
+	}
+	for(a2 in AllelesFlexSuper)
+	{
+		Alleles0Super[Alleles0Super.length]=AllelesFlexSuper[a2];
+	}
+	for(a3 in listitemsFlex)
+	{
+		listitems[listitems.length]=listitemsFlex[a3];
+	}	
+	for(a4 in listMdefsFlex)
+	{
+		listMdefs[listMdefs.length] = listMdefsFlex[a4];
+	}
+	for(a5 in listFdefsFlex)
+	{
+		listFdefs[listFdefs.length] = listFdefsFlex[a5];
+	}	
+	for(a6 in listHetsFlex)
+	{
+		listHets[listHets.length]  = listHetsFlex[a6];
+	}
+	//
+}   
+//
+//Quick add functionality
+function flexQAG()
+{
+	//get the stuff
+	var symb = dgebi("symbQAG").value;
+	var eff  = dgebi("effQAG").value;
+	//
+	if(symb=="") symb = eff.replace("[","").replace("(","").substring(0,3);
+	if(symb=="") symb = "Gen"+(1*(listLociInfo.length+1));
+	//
+	var loc = symb.substring(0,1).toUpperCase()+symb.substring(1).replace("^","");
+	var sexl = dgebi("sexlQAG").value;
+	var dom  = dgebi("domQAG").value;
+	//
+	if(sexl=="S" && OddGender=="")
+	{
+		var og = confirm("Press OK if the Male has an odd pair of sexchromosomes ( XY ) ...");
+		if( og ) OddGender="M";
+		else OddGender="F";
+	}
+	//add the gene
+	listLociInfo[listLociInfo.length] = new Array(loc,eff,sexl,""); //field 0 locus ; field1 name ; field2 sexlinked=S ; field3 ?
+	listitemsFlex[listitemsFlex.length] = loc;	
+	//
+	//add the alleles
+	var wta = "";
+	var mut = symb;
+	var symba = "";
+	var symbb = "";
+	var effH = "";
+	if(dom=="D")
+	{
+		wta = symb.toLowerCase().replace("^","")+"+";
+		mut = symb.substring(0,1).toUpperCase()+symb.substring(1);
+		symba = mut;
+		symbb = wta;
+	}
+	else if(dom=="H")
+	{
+		var df = (eff.toUpperCase().indexOf("DF")>=0?true:false);
+		var leth = (eff.toUpperCase().indexOf("LETHAL")>=0?true:false);
+		var minus = (eff.indexOf("-")>=0?true:false);
+		wta = symb.toLowerCase().replace("^","")+"+";
+		mut = symb.substring(0,1).toUpperCase()+symb.substring(1);
+		var eff2 = (minus?eff.replace("-",""):eff);
+		effH = (df ? eff2.replace(/[(]?df[)]?/i,"") : (leth ? eff2.replace(/[(]?letha[a]?l[)]?/i,"") : eff2+" SF"))+(minus?"-":"");
+		symba = mut;
+		symbb = wta;
+	}
+	else if(dom=="R")
+	{
+		wta = symb.substring(0,1).toUpperCase()+symb.substring(1).replace("^","")+"+";
+		mut = symb.toLowerCase();
+		//wt allele first
+		listAllAlleles[listAllAlleles.length] = new Array(loc,wta,sexl,"",dom,"","W",""); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+		AllelesFlex[AllelesFlex.length] = wta;
+		//
+		if(eff!="") listRecessiveAlleles[listRecessiveAlleles.length] = new Array(loc,mut,sexl,eff); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect
+		//
+		symba = wta;
+		symbb = mut;
+	}
+	listAllAlleles[listAllAlleles.length] = new Array(loc,mut,sexl,eff,dom,effH,"",""); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+	AllelesFlex[AllelesFlex.length] = mut;
+	if(mut.indexOf("^")>=0) AllelesFlexSuper[AllelesFlexSuper.length] = mut;
+	if(wta.indexOf("^")>=0) AllelesFlexSuper[AllelesFlexSuper.length] = wta;//?
+	if(dom!="R")
+	{
+		listAllAlleles[listAllAlleles.length] = new Array(loc,wta,sexl,"","R","","W",""); //field 0 locus ; field1 symbol ; field2 sexlinked=S ; field3 effect ; field4 dominance = D H R ; field 5 effect if heterozygous ; field 6 epistatic = E W (wildtype)
+		AllelesFlex[AllelesFlex.length] = wta;
+	}
+	//
+	if(dom=="H") listHetsFlex[listHetsFlex.length] = "+";
+	else         listHetsFlex[listHetsFlex.length] = "-";
+	//
+	if (sexl=="S" && OddGender=="M")
+	{
+		listMdefsFlex[listMdefsFlex.length] = wta+"/-"; 
+		listFdefsFlex[listFdefsFlex.length] = wta+"/"+wta;
+	}
+	else if (sexl=="S" && OddGender=="F")
+	{
+		listMdefsFlex[listMdefsFlex.length] = wta+"/"+wta; 
+		listFdefsFlex[listFdefsFlex.length] = wta+"/-";
+	}
+	else 
+	{
+		listMdefsFlex[listMdefsFlex.length] = wta+"/"+wta; 
+		listFdefsFlex[listFdefsFlex.length] = wta+"/"+wta;
+	}
+	//
+	var lstoptidx = listoptionsMFlex.length;
+	listoptionsMFlex [lstoptidx] = new Array();
+	listoptionsMFlex2[lstoptidx] = new Array();
+	listoptionsFFlex [lstoptidx] = new Array();
+	listoptionsFFlex2[lstoptidx] = new Array();
+	//
+	if (sexl!="S" || OddGender!="M")
+	{
+		listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symba+"/"+symba;
+		listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symba+"/"+symbb;
+		listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symbb+"/"+symbb;
+		listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symba+"//"+symba;
+		listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symba+"//"+symbb;
+		listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symbb+"//"+symbb;
+	}
+	if (sexl!="S" || OddGender!="F")
+	{
+		listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length]  = symba+"/"+symba;
+		listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length]  = symba+"/"+symbb;
+		listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length]  = symbb+"/"+symbb;
+		listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symba+"//"+symba;
+		listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symba+"//"+symbb;
+		listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symbb+"//"+symbb;
+	}
+	if (sexl=="S" && OddGender=="M")
+	{
+		listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symba+"/-";
+		listoptionsMFlex[lstoptidx][listoptionsMFlex[lstoptidx].length]  = symbb+"/-";
+		listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symba+"/-";
+		listoptionsMFlex2[lstoptidx][listoptionsMFlex2[lstoptidx].length] = symbb+"/-";
+	}
+	if (sexl=="S" && OddGender=="F")
+	{
+		listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length] =  symba+"/-";
+		listoptionsFFlex[lstoptidx][listoptionsFFlex[lstoptidx].length] =  symbb+"/-";
+		listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symba+"/-";
+		listoptionsFFlex2[lstoptidx][listoptionsFFlex2[lstoptidx].length] = symbb+"/-";
+	}                                                              
+	//
+}
+//
+var compWords = 
+[["@A","Agouti"],
+ ["@B","Black"],
+ ["@C","Chinchilla"],
+ ["@D","Dilut"], 
+ ["@E","Beige"],
+ ["@F","Coffee"],  
+ ["@G","Gold"], 
+ ["@H","Chocolate"],
+ ["@I","Lilac"],
+ ["@J","Seal"],
+ ["@K","Sepia"],  
+ ["@L","Lethal"],
+ ["@M","Mottle"], 
+ ["@N","Albino"],
+ ["@O","Cinnamon"], 
+ ["@P","Spot"],
+ ["@Q","Brindle"], 
+ ["@R","Brown"],
+ ["@S","Silver"],
+ ["@T","Point"], 
+ ["@U","Blue"],
+ ["@V","Lavender"],
+ ["@W","White"],
+ ["@X","Color"], 
+ ["@Y","Yellow"],
+ ["@Z","Siamese"]];
+var compWordsNew = 
+[["@Z","Agouti"],
+ ["@Z1","Black"],
+ ["@Z2","Chinchilla"],
+ ["@Z3","Dilut"], 
+ ["@Z4","Beige"],
+ ["@Z5","Coffee"],  
+ ["@Z6","Gold"], 
+ ["@Z7","Chocolate"],
+ ["@Z8","Lilac"],
+ ["@Z9","Seal"],
+ ["@Z0","Sepia"],  
+ ["@ZA","Lethal"],
+ ["@ZB","Mottle"], 
+ ["@ZC","Albino"],
+ ["@ZD","Cinnamon"], 
+ ["@ZE","Spot"],
+ ["@ZF","Brindle"], 
+ ["@ZG","Brown"],
+ ["@ZH","Silver"],
+ ["@ZI","Point"], 
+ ["@ZJ","Blue"],
+ ["@ZK","Lavender"],
+ ["@ZL","White"],
+ ["@ZM","Color"], 
+ ["@ZN","Yellow"],
+ ["@ZO","Siamese"],
+ ["@ZP","Extreme"],
+ ["@ZQ","Tortoise"],
+ ["@ZR","Argente"],
+ ["@ZS","Champagne"],
+ ["@ZT","Smoke"],
+ ["@ZU","Cream"],
+ ["@ZV","Roan"],
+ ["@ZW","Splash"],
+ ["@ZX","Chestnut"],
+ ["@ZY","Sable"],
+ ["@ZZ","LETHAL"]//ToDo Za-Zz
+ ]; 
+
+ function getCompWrds(str,special)
+{
+	var cWrds = new Array();
+	//
+	var tmp = str.replace(/,/g,";").replace(/ /g,";").split(';');
+	//
+	for(var w in tmp)
+	{
+		var wrd = tmp[w];
+		if(wrd!="" && wrd.length>2 && wrd.indexOf("@")<0 && !ArrayListContains(wrd,cWrds))
+		{
+			var lcchk = true;
+			if(special)
+			{
+				for(var wlc in cWrds)
+				{
+					//first appearance in normal case and without ()
+					if(wrd==cWrds[wlc].toLowerCase() || wrd.toLowerCase().replace("(","").replace(")","")==cWrds[wlc].toLowerCase()){
+						lcchk = false;
+						break;
+					}
+				}
+			}
+			if(lcchk)  cWrds[cWrds.length]=wrd;
+		}
+	}
+	//
+	return cWrds;
+}
+function compress(str)
+{
+	var str2 = str.replace(/,/g,";,");
+	//
+	var cWrds = getCompWrds(str2);
+	//
+	for(var w = cWrds.length-1;w>=0;w--)//reverse not needed but OK
+	{
+		var wrd = cWrds[w];
+		//
+		var sep1 = ";";
+		var sep2 = ";";
+		var idx1 = str2.indexOf(";"+wrd+";");
+		var idx2 = str2.indexOf(";"+wrd+" ");
+		var idx3 = str2.indexOf(" "+wrd+";");
+		var idx4 = str2.indexOf(" "+wrd+" ");
+		//
+		cidx =50000;
+		if(idx1>=0)
+		{
+			sep1 = ";";
+			sep2 = ";";
+			cidx =idx1;
+		}
+		if(idx2>=0 && idx2<cidx)
+		{
+			sep1 = ";";
+			sep2 = " ";
+			cidx =idx2;		
+		}
+		if(idx3>=0 && idx3<cidx)
+		{
+			sep1 = " ";
+			sep2 = ";";
+			cidx =idx3;		
+		}
+		if(idx4>=0 && idx4<cidx)
+		{
+			sep1 = " ";
+			sep2 = " ";
+			cidx =idx4;		
+		}
+		//first word special replace
+		str2 = str2.replace(sep1+wrd+sep2,sep1+"@"+w+"@"+sep2);
+		//
+		while(str2.indexOf(";"+wrd+";")>=0 || str2.indexOf(";"+wrd+" ")>=0 || str2.indexOf(" "+wrd+";")>=0 || str2.indexOf(" "+wrd+" ")>=0)
+		{
+			str2 = str2.replace(";"+wrd+";",";@"+w+";");
+			str2 = str2.replace(";"+wrd+" ",";@"+w+" ");
+			str2 = str2.replace(" "+wrd+";"," @"+w+";");
+			str2 = str2.replace(" "+wrd+" "," @"+w+" ");
+		}
+		//
+		str2 = str2.replace(sep1+"@"+w+"@"+sep2,sep1+wrd+sep2);//put first word back
+	}
+	//
+	for(var w2 in compWords)
+	{
+		while(str2.indexOf(compWords[w2][1])>=0 || str2.indexOf(compWords[w2][1].toLowerCase())>=0)
+		{
+			str2 = str2.replace(compWords[w2][1],compWords[w2][0]);
+			str2 = str2.replace(compWords[w2][1].toLowerCase(),compWords[w2][0].toLowerCase());
+		}
+	}
+	//
+	while(str2.indexOf(";,")>=0)
+	{
+		str2 = str2.replace(";,",",");
+	}
+	//
+	return str2;
+}
+
+var abc = "ABCDEFGHIJKLMNOPQRSTUVWXY"; //exclude Z: reserved words
+var abc2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+function getLtr(cWrdslength){
+	var cLtr = [];
+	//console.log(abc.length);
+	for(var l0 = 0; l0 < abc.length; l0++)
+	{
+		cLtr[cLtr.length]="@"+(abc.substring(l0,l0+1));
+	}
+	for(var l2 = 0; l2 < abc2.length; l2++)
+	{
+		for(var l1 = 0; l1 < abc.length; l1++)
+		{
+			cLtr[cLtr.length]="@"+abc.substring(l1,l1+1)+abc2.substring(l2,l2+1);
+			if(cLtr.length == cWrdslength)
+			{
+				break;
+			}
+		}
+		if(cLtr.length == cWrdslength)
+		{
+			break;
+		}
+	}
+	return cLtr;
+}
+	
+function compress2(str)
+{
+	var str2 = str.replace(/,/g,";,");
+	//
+	var cWrds = getCompWrds(str2,true);
+	//
+	var ltr = "";
+	var lidx = 0;
+	//
+	var cLtr = getLtr(cWrds.length);
+
+	for(var w in cWrds)
+	{
+		ltr = cLtr[w];
+		//console.log(ltr);
+		//if(w>12) break;
+		
+		var wrd = cWrds[w];
+		//
+		for(var i=0; i < 2;i++)
+		{
+			if(i==1)
+			{
+				if(wrd==wrd.toLowerCase())
+				{
+					break;
+				}
+				wrd=wrd.toLowerCase();
+				ltr=ltr.toLowerCase();
+			}
+			var sep1 = ";";
+			var sep2 = ";";
+			var idx1 = str2.indexOf(";"+wrd+";");
+			var idx2 = str2.indexOf(";"+wrd+" ");
+			var idx3 = str2.indexOf(" "+wrd+";");
+			var idx4 = str2.indexOf(" "+wrd+" ");
+			var idx5 = str2.indexOf("("+wrd+")");
+			var idx6 = str2.indexOf("("+wrd+" ");
+			var idx7 = str2.indexOf(" "+wrd+")");
+			//
+			cidx = 50000; //5000?
+			if(idx1>=0)
+			{
+				sep1 = ";";
+				sep2 = ";";
+				cidx =idx1;
+			}
+			if(idx2>=0 && idx2<cidx)
+			{
+				sep1 = ";";
+				sep2 = " ";
+				cidx =idx2;		
+			}
+			if(idx3>=0 && idx3<cidx)
+			{
+				sep1 = " ";
+				sep2 = ";";
+				cidx =idx3;		
+			}
+			if(idx4>=0 && idx4<cidx)
+			{
+				sep1 = " ";
+				sep2 = " ";
+				cidx =idx4;		
+			}
+			if(idx5>=0 && idx5<cidx)
+			{
+				sep1 = "(";
+				sep2 = ")";
+				cidx =idx5;		
+			}
+			if(idx5>=0 && idx5<cidx)
+			{
+				sep1 = "(";
+				sep2 = ")";
+				cidx =idx5;		
+			}
+			if(idx6>=0 && idx6<cidx)
+			{
+				sep1 = "(";
+				sep2 = " ";
+				cidx =idx6;		
+			}
+			if(idx7>=0 && idx7<cidx)
+			{
+				sep1 = " ";
+				sep2 = ")";
+				cidx =idx7;		
+			}
+			//first word special replace
+			if(i==0)
+			{
+				str2 = str2.replace(sep1+wrd+sep2,sep1+"@"+ltr+"@"+sep2);
+			}
+			//console.log(ltr+" = "+wrd);
+			//
+			while(str2.indexOf(";"+wrd+";")>=0 || str2.indexOf(";"+wrd+" ")>=0 || str2.indexOf(" "+wrd+";")>=0 || str2.indexOf(" "+wrd+" ")>=0 ||
+				str2.indexOf("("+wrd+")")>=0 || str2.indexOf("("+wrd+" ")>=0 || str2.indexOf(" "+wrd+")")>=0)
+			{
+				str2 = str2.replace(";"+wrd+";",";"+ltr+";");
+				str2 = str2.replace(";"+wrd+" ",";"+ltr+" ");
+				str2 = str2.replace(" "+wrd+";"," "+ltr+";");
+				str2 = str2.replace(" "+wrd+" "," "+ltr+" ");
+				str2 = str2.replace("("+wrd+")","("+ltr+")");
+				str2 = str2.replace("("+wrd+" ","("+ltr+" ");
+				str2 = str2.replace(" "+wrd+")"," "+ltr+")");
+			}
+			if(i==0)
+			{
+				str2 = str2.replace(sep1+"@"+ltr+"@"+sep2,sep1+wrd+sep2);//put first word back
+			}
+		}//normal case lowercase loop
+	}
+	//
+	var zix = 2;
+	if(str2.indexOf(" ;")<0){
+		zix=3;
+		str2 = str2.replace(/;@/g,"@");// ,X;@wrd;@wrd @wrd;
+	}
+	//
+	for(var w2 in compWordsNew)
+	{
+		while(str2.indexOf(compWordsNew[w2][1])>=0 || str2.indexOf(compWordsNew[w2][1].toLowerCase())>=0)
+		{
+			//console.log(compWordsNew[w2][1]);
+			str2 = str2.replace(compWordsNew[w2][1],compWordsNew[w2][0]);
+			str2 = str2.replace(compWordsNew[w2][1].toLowerCase(),compWordsNew[w2][0].substring(0,2).toLowerCase()+compWordsNew[w2][0].substring(2));
+		}
+	}
+	//
+	while(str2.indexOf(";,")>=0)
+	{
+		str2 = str2.replace(";,",",");
+	}
+	//	
+	return str2+"&Z="+zix;
+}
+function decompress2(string1)
+{
+	if(string1.indexOf("@")<0) return string1;
+	//
+	var str2 = string1;
+	//
+	for(var w2=compWordsNew.length-1;w2>=0;w2--)
+	{
+		while(str2.indexOf(compWordsNew[w2][0])>=0 || str2.indexOf(compWordsNew[w2][0].substring(0,2).toLowerCase()+compWordsNew[w2][0].substring(2))>=0)
+		{
+			//console.log(compWordsNew[w2][1]);
+			str2 = str2.replace(compWordsNew[w2][0],compWordsNew[w2][1]);
+			str2 = str2.replace(compWordsNew[w2][0].substring(0,2).toLowerCase()+compWordsNew[w2][0].substring(2),compWordsNew[w2][1].toLowerCase());
+		}
+	}
+	//
+	if(str2.indexOf("&Z=3")>=0){
+		str2 = str2.replace(/@/g,";@");
+		str2 = str2.replace(/ ;@/g," @");
+		str2 = str2.replace(/\(;@/g,"(@");//?
+		str2 = str2.replace(/\.;@/g,".@");//do not use trailing .
+	}
+	//
+	var cWrds = getCompWrds(str2,true);//?
+	//
+	var cLtr = getLtr(cWrds.length);
+	//
+	trailer = "X*X*X*";
+	str2 += trailer;
+	
+	for(var w = cWrds.length-1;w>=0;w--)//reverse
+	{
+		var wrd = cWrds[w];
+		//console.log(wrd);
+		//
+		var seps = [" ",";",",","("];
+		var seps2 = [" ",";",",",")","&"];
+		for(var s1 in seps)
+		{
+			for(var s2 in seps2)
+			{
+				while(str2.indexOf(seps[s1]+cLtr[w]+seps2[s2])>=0 || str2.indexOf(seps[s1]+cLtr[w].toLowerCase()+seps2[s2])>=0)
+				{
+					str2 = str2.replace(seps[s1]+cLtr[w]+seps2[s2],seps[s1]+wrd+seps2[s2]);
+					str2 = str2.replace(seps[s1]+cLtr[w].toLowerCase()+seps2[s2],seps[s1]+wrd.toLowerCase()+seps2[s2]);			
+				}
+			}
+		}
+	}
+	//
+	return str2.replace(trailer,"").replace("&Z=2","").replace("&Z=3","");	
+}
+function decompress(string1)
+{
+	if(string1.indexOf("@")<0) return string1;
+	if(string1.indexOf("&Z=")>=0) return decompress2(string1); 
+	//
+	var str2 = string1;
+	//
+	for(var w2 in compWords)
+	{
+		while(str2.indexOf(compWords[w2][0])>=0 || str2.indexOf(compWords[w2][0].toLowerCase())>=0)
+		{
+			//console.log(compWords[w2][1]);
+			str2 = str2.replace(compWords[w2][0],compWords[w2][1]);
+			str2 = str2.replace(compWords[w2][0].toLowerCase(),compWords[w2][1].toLowerCase());
+		}
+	}
+	//
+	var cWrds = getCompWrds(str2);
+	//
+	for(var w = cWrds.length-1;w>=0;w--)//reverse
+	{
+		var wrd = cWrds[w];
+		//
+		while(str2.indexOf("@"+w)>=0)
+		{
+			str2 = str2.replace("@"+w,wrd);
+		}
+	}
+	//
+	return str2;
+}
+
+var idshortlink = 0;
+function getShortLink(otherArgs)
+{
+	if(techname)
+	{
+		idshortlink++;
+		return "<a href='javascript:toggleShortlink("+idshortlink+")'>shortlink</a><div id='shortlink"+idshortlink+"' style='display:none;background-color:lightgray;border: grey 3px solid;padding:5px;margin-top: 3px;'>"+
+				"NOTE: To link to this cross and calculator and not miss updates use (click to select): "+
+				"<b style='font-size:16px' id='shortlinkhref"+idshortlink+"' onclick='selectText(\"shortlinkhref"+idshortlink+"\")'>http://kippenjungle.nl/Overzicht.htm?run="+techname+otherArgs+
+				"</b>"+
+				"</div> ";
+	}
+	return "";
+}
+function toggleShortlink(id)
+{
+	if(dgebi('shortlink'+id))
+	{
+		var dv = dgebi('shortlink'+id);
+		if(dv.style.display=="none")
+		{
+			dv.style.display="";
+		}
+		else
+		{
+			dv.style.display="none";
+		}
+	}
+}
+function selectText(containerid) {
+		console.log(navigator);
+		if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv:11/) || navigator.userAgent.match(/Edge/)))
+		{//iexplorer
+		  prompt("Copy the link here, eg. CTRL+C",document.getElementById(containerid).innerHTML.replace(/&amp;/g,"&"));
+		}
+        if (document.selection) {
+			console.log("selectText document.selection");
+            var range = document.body.createTextRange();
+            range.moveToElementText(document.getElementById(containerid));
+            range.select();
+		//} else if(document.getSelection)
+		//{
+		//	console.log("selectText document.getSelection");
+		//	var range = document.createRange();
+        //    range.selectNode(document.getElementById(containerid));
+		//	if(document.getSelection().empty) document.getSelection().empty();
+        //    document.getSelection().addRange(range);
+        } else if (window.getSelection) {
+			console.log("selectText window.getSelection");
+            var range = document.createRange();
+            range.selectNode(document.getElementById(containerid));
+			if(window.getSelection().empty) window.getSelection().empty();
+            window.getSelection().addRange(range);
+        }
+    }
+function saveReport(htmlid){
+	if(dgebi(htmlid) && dgebi(htmlid).innerHTML)
+	{
+		var nameDefault = "eg. projectname generation X";
+		var name=prompt("Please enter a Name for your report",nameDefault);
+		if (name!=null)
+		{
+			if(name != nameDefault)
+			{
+			}
+			else
+			{
+				var tijd =getTijd();
+				name = "Report"+tijd;
+			}
+			if(cookieName)
+			{
+				var newCookieName = "Report-"+cookieName+"-"+name.replace(";","");
+				setStringToCookie(newCookieName,dgebi(htmlid).innerHTML);
+				var prevBackups = getStringFromCookie("reports");
+				prevBackups = (prevBackups?prevBackups:"") + (prevBackups?";":"") + newCookieName;			
+				setStringToCookie("reports",prevBackups);
+			}
+			
+			refreshReports(htmlid);
+		}
+	}
+}
+function refreshReports(htmlid){
+	if(dgebi("repsel")){
+		var tmp = getStringFromCookie("reports");
+		var bupselect="";
+		if(tmp)
+		{
+			bupselect = "<p><select id='reps'><option value=''>Select a saved report to show</option>";
+			for(var bu in tmp.split(';'))
+			{
+				if(tmp.split(';')[bu].indexOf("Report-"+cookieName+"-")>=0)
+				{
+					bupselect += "<option value='"+tmp.split(';')[bu]+"'>"+tmp.split(';')[bu]+"</option>";
+				}
+			}
+			bupselect += "</select> - <a href=\"javascript:putReport('"+htmlid+"')\">show Report</a> - <a href=\"javascript:deleteOneReport('"+htmlid+"')\">remove selected Report</a></p>";
+			dgebi("repsel").innerHTML = bupselect;
+		}
+	}
+}
+function putReport(htmlid)
+	{
+		if(dgebi('reps') && dgebi('reps').value && dgebi(htmlid))
+		{
+			var tmp = getStringFromCookie(dgebi('reps').value);
+			dgebi(htmlid).innerHTML = tmp;
+			if(refreshHTMLcode){
+				refreshHTMLcode(tmp);
+			}
+		}		
+	}
+function deleteOneReport(htmlid)
+	{
+		if(dgebi('reps').value)
+		{	
+			var tmp = dgebi('reps').value;
+			var prevBackups = getStringFromCookie("reports");			
+			prevBackups = ("###"+(prevBackups?prevBackups:"")+"***").replace(";"+tmp+";",";").replace(";"+tmp+"***","").replace("###"+tmp+";","").replace("###"+tmp+"***","").replace("***","").replace("###","");			
+			setStringToCookie("reports",prevBackups);
+			refreshReports(htmlid);
+			localStorage.removeItem(tmp);			
+		}		
+	}
+//  	
+// stop hiding -->

@@ -1,0 +1,682 @@
+//select4later
+var crossnr = 0;
+var ArraySelected = new Array();
+//Fields to keep the parents genotypes
+var gmFlex = ""; //NOTE: complete genotypes in this webpage!
+var gfFlex = "";
+//
+function setName(){
+	return "animal"+(1*ArraySelected.length+1);
+}
+function setLists2(mf,gt,pic,nm,mnm,fnm)
+{
+	if(!nm && (mnm || fnm)){
+	  nm = setName();
+	}	
+  
+	var thisKlr = GetKleurFlex(mf,gt);
+	var splitloci = GetSplitFlex(mf,gt);
+	setlociFlex(mf,gt);		
+	if(mf=="M")
+	{
+		gmFlex = gt;
+		
+		mname = "";
+		mmname = "";
+		mfname = "";		
+		if(nm) mname = nm;
+		if(mnm) mmname = mnm;
+		if(fnm) mfname = fnm;
+		
+		dgebi("Flex1").src = pic;
+		dgebi("FlexA1").href = dgebi("Flex1").src;
+		dgebi("Flex1").title = gt;
+		dgebi("LabelFlex1").innerHTML = MockUpGT1(gt).replace(/,/g,", ")+"<BR>"+thisKlr+"<BR><I>"+MockUpGT1(splitloci).replace("split:","split:</I><I>")+"</I>";
+	}
+	else if(mf=="F")
+	{	
+		gfFlex = gt;
+		
+		fname = "";
+		fmname = "";
+		ffname = "";		
+		if(nm) fname = nm;
+		if(mnm) fmname = mnm;
+		if(fnm) ffname = fnm;
+  
+		dgebi("Flex2").src = pic;
+		dgebi("FlexA2").href = dgebi("Flex2").src;
+		dgebi("Flex2").title = gt;
+		dgebi("LabelFlex2").innerHTML = MockUpGT1(gt).replace(/,/g,", ")+"<BR>"+thisKlr+"<BR><I>"+MockUpGT1(splitloci).replace("split:","split:</I><I>")+"</I>";
+	}
+	select4later(mf,gt,pic,"USED",nm,mnm,fnm);
+}//setLists2
+//
+function setLists2matrix(mf,gt,pic,nm,mnm,fnm)
+{
+	setLists2(mf,GetGTordered(mf,gt),pic,nm,mnm,fnm);
+}
+//
+function showSummary()
+{
+	if(!dgebi("HideGenotype") || dgebi("HideGenotype").checked) dgebi("result1Embed").innerHTML = "";
+}
+//
+function goEN(idx)
+{
+	var gt = "";
+	if(idx==1)
+	{
+		gt = getGTfromLociFlex("M");
+		gmFlex = gt;
+		mname = "";
+		mmname = "";
+		mfname = "";		
+	}
+	else if(idx==2)
+	{
+		gt = getGTfromLociFlex("F");
+		gfFlex = gt;
+		fname = "";
+		fmname = "";
+		ffname = "";
+	}	
+	setColorDescFlex(idx,gt);
+}
+//
+function setColorDescFlex(idx,gt)
+{
+	var thisKlr = "";
+	var spl = "";
+	if(idx==1)
+	{
+		thisKlr = GetKleurFlex("M",gt);	
+		spl = GetSplitFlex("M",gt);
+		dgebi("Flex1").src = GetPlaatjeFlexDB(thisKlr,"M");
+		dgebi("FlexA1").href = dgebi("Flex1").src;
+	}
+	else if(idx==2)
+	{
+		thisKlr = GetKleurFlex("F",gt);
+		spl = GetSplitFlex("F",gt);
+		dgebi("Flex2").src = GetPlaatjeFlexDB(thisKlr,"F");
+		dgebi("FlexA2").href = dgebi("Flex2").src;
+	}
+	dgebi("Flex"+idx).title = gt;
+	dgebi("LabelFlex"+idx).innerHTML = MockUpGT1(gt)+"<BR><B>"+thisKlr+"</B><BR><I>"+MockUpGT1(spl).replace("split:","split:</I><I>")+"</I>";
+}
+//
+//Selected animals:
+function select4later(mf,gtTxt,jpg,used,nm,mnm,fnm)
+{
+	var klTxt = GetKleurFlex(mf,gtTxt);	  
+	var enkl = MockUpGT1(GetSplitFlex(mf,gtTxt));
+	var today = new Date();
+	var tijd =getTijd();
+	var cnr = "";
+	if(used=="PUNNETT")
+	{
+		used = "=> Punnett ";
+		cnr  = crossnr;
+		
+	}
+	else if(used=="CROSS")
+	{
+		used = "=> ";
+		cnr  = crossnr;
+		
+	}
+	else if(used=="USED")
+	{
+		used = "=> P";
+	}
+	else if(used=="SELECTED")
+	{
+		used = "=> SEL";
+	}
+	else
+	{
+		used = "";
+	}
+	if(nm){
+		used = nm+"<br> "+used;
+	}
+	if(cookieName)
+	{
+		var tmp = getStringFromCookie(cookieName);	
+		if(tmp && tmp.indexOf("[")>=0 && tmp.indexOf("]")>=0)
+		{
+			ArraySelected = eval(getStringFromCookie(cookieName));
+		}
+	}
+	ArraySelected[ArraySelected.length] = new Array(mf,gtTxt,klTxt,enkl,jpg,tijd,used,cnr,mnm ? mnm : "",fnm ? fnm : "");
+	if(cookieName){
+		setStringToCookie(cookieName,serializeForCookie(ArraySelected));
+	}
+}
+//
+function showSelected()
+{
+	var layTxt = "<TABLE>"+ (ArraySelected.length>0 ? "<TR><TD colspan=7>NOTE: in modern browsers selected/used are saved permanently - <a href='javascript:clearSelected(\"X\")'>delete all</a> - <a href='javascript:backupSelected()'>backup</a> - <a href='javascript:editPool()'>edit</a></TD></TR>":"<TR><TD>...</TD></TR>")+"<TR>";
+	var gtTxt = "";
+	var klTxt = "";
+	var jpg  = "";
+	var enkl = "";
+	var tijd = "";
+	var txt = "";
+	var mftxt = "";
+	for(h in ArraySelected) //vbkl.length
+	{
+		mf    = ArraySelected[h][0];
+		if(mf=="M") mftxt = "Male";
+		else if(mf=="F") mftxt = "Female";
+		gtTxt = ArraySelected[h][1];
+		klTxt = ArraySelected[h][2];	  
+		jpg   = ArraySelected[h][4].replace(/ /g,"%20");
+		enkl  = ArraySelected[h][3];
+		tijd  = ArraySelected[h][5];
+		txt   = ArraySelected[h][6];
+		var txtP = "";
+		if(txt){
+			txtP = (""+txt).replace(/<br>/gi," ").replace(/<br\/>/gi," ").split("=")[0];//pooleditor
+			try{txtP=txtP.trim();}catch(ex){}
+		}
+		var txtPM = "";
+		var txtPF = "";
+		if(ArraySelected[h].length>8){
+			txtPM = ArraySelected[h][8];
+		}
+		if(ArraySelected[h].length>9){
+			txtPF = ArraySelected[h][9];
+		}
+		if(ArraySelected[h][7]!="")
+		{
+			txt += getCrossHref(ArraySelected[h][7],tijd);
+		}
+		else
+		{
+			var txt2 = getBreedbookGT(gtTxt);
+			if(txt2!="")
+			{
+				txt += " "+Genotypestxt.replace("s","")+" (Breedbook)"+": <B><Font size=2>"+txt2+"</Font></B>";
+			}
+		}
+		var img1 = "<img src="+jpg+" alt='"+snpy+"' title='"+gtTxt+" | "+klTxt+" ("+enkl+")' width="+picsize+" />";
+		if(showPics==0) img1 = "<B><FONT size=7 title='"+gtTxt+"' >*</FONT></B>";
+		layTxt += "<TD>"+img1+"</TD>"+
+		          "<TD>"+tijd+" "+txt+"<BR><FONT size=1>"+MockUpGT1(gtTxt)+"</FONT><BR><B>"+klTxt+" &nbsp; "+enkl.replace("split:","</B><I>split:</I><I>")+(enkl.indexOf("split:")>=0?"</I>":"</B>")+"<BR>"+
+				  "<A href=\"javascript:setLists2('"+mf+"','"+gtTxt+"','"+jpg+"','"+txtP+"','"+txtPM+"','"+txtPF+"')\" >Continue with this "+mftxt+"</A>"+
+				  " - <a href='javascript:removeSelected(\""+ArraySelected[h][0]+"\","+h+",\""+tijd+"\")'>delete</a></TD><TD>"+(txtP && (txtPM || txtPF) ? drawCoi([txtP,txtPM,txtPF]) : "")+"</TD></TR><TR>";		  	  
+	}	
+	layTxt += "<TD></TD></TR></TABLE>"
+	dgebi("result1Embed").innerHTML = layTxt;
+}
+function getAnimal(nm){
+	for(h in ArraySelected) //vbkl.length
+	{
+		var txt  = ArraySelected[h][6];
+		var txtP = "";
+		if(txt){
+			txtP = (""+txt).replace(/<br>/gi," ").replace(/<br\/>/gi," ").split("=")[0];//pooleditor
+			try{txtP=txtP.trim();}catch(ex){}
+		}
+		if(txtP==nm)
+		{
+			var txtPM = "";
+			var txtPF = "";
+			if(ArraySelected[h].length>8){
+				txtPM = ArraySelected[h][8];
+			}
+			if(ArraySelected[h].length>9){
+				txtPF = ArraySelected[h][9];
+			}
+			return [nm,txtPM,txtPF];
+		}
+	}
+	return [nm,"",""];
+}
+function drawCoi(arr)
+{
+	var txt = "<table style='border:2px solid black;'><tr>";
+	txt += "<td rowspan=2 >"+arr[0]+"</td>";
+	txt += 	"<td>"+(!arr[1] ?"&nbsp;": drawCoi(getAnimal(arr[1])))+"</td></tr>"+
+		"<tr><td>"+(!arr[2] ?"&nbsp;": drawCoi(getAnimal(arr[2])))+"</td>";	
+	txt += "</tr></table>";
+	return txt;
+}
+//
+function checkTime(i)
+{
+if (i<10) 
+  {
+  i="0" + i;
+  }
+return i;
+}	
+//
+function PictureSize(n)
+{
+	picsize += n;
+	dgebi("Flex1").height = picsize;
+	dgebi("Flex2").height = picsize;
+}
+//
+function initGui1()
+{
+	//disect querystring
+	var q = window.location.search.substring(1);
+	//
+	dgebi("altlayout1").href += "?"+q;
+	dgebi("altlayout2").href += "?"+q;
+	dgebi("altlayout3").href += "?"+q;
+	//
+	//
+	prepFlex(q);
+	//set global variables:
+	initFlex();
+	if(cookieName)
+	  {
+		var tmp = getStringFromCookie(cookieName);	
+		if(tmp && tmp.indexOf("[")>=0 && tmp.indexOf("]")>=0)
+		{
+			ArraySelected = eval(getStringFromCookie(cookieName));
+		}
+	  }
+	//
+	if(showPics==0) 
+	{
+		PictureSize(-1*(picsize-10));
+	}
+	//
+	//21-03-2011
+	if(dgebi("wizlink") && querystring.indexOf("DATA=")>=0)
+	{	
+		if(q.indexOf("@")>=0) {} //compressed
+		else q=querystring;
+		//
+		dgebi("wizlink").href += "?"+(moduleFlex2=="kruisingFlex.html"?"":"MODULE="+moduleFlex2+"&")+q;
+	}
+}
+//
+function initGui2()
+{
+	//Breedbook database default genotype:
+	gmFlex = defgt;
+	gfFlex = defgt;
+	//called by other applications:
+    var args = new Array();
+	var q = window.location.search.substring(1);
+    args = q.split('&');
+    var param = "";
+    var val = "";
+    var mgt = "";
+    var fgt = "";
+    //querystring handling
+  for(j=0;j<args.length;j++)
+  {
+    param = args[j].split('=')[0].toUpperCase();
+    val = htmlDecode(args[j].split('=')[1]);	
+	if(param=="MGT" || param=="MALEGT")
+	{
+	  mgt = val;
+	}
+	else if(param=="FGT" || param=="VGT" || param=="FEMALEGT")
+	{
+	  fgt = val;
+	}
+  }  
+  if(mgt!="")
+  {
+	gmFlex = mgt;
+  }
+  if(fgt!="")
+  {
+	gfFlex =fgt;
+  }
+	//defaults
+	dgebi("Flex1").title = gmFlex;
+	var gt = "";
+	if(OddGender=="M")
+	{
+		gt = GetCompleteGTotherSpecies("M",gmFlex,"MAMMAL");
+	}
+	else
+	{
+		gt = GetCompleteGTotherSpecies("M",gmFlex,"");
+	}
+	//
+	gmFlex = gt; //complete GT
+	setlociFlex("M",gt);
+	var thisKlr = GetKleurFlex("M",gt);
+	dgebi("Flex1").src = GetPlaatjeFlexDB(thisKlr,"M");
+	dgebi("FlexA1").href = dgebi("Flex1").src;
+	dgebi("LabelFlex1").innerHTML = MockUpGT1(gmFlex)+"<BR><B>"+thisKlr+"</B><BR><I>"+MockUpGT1(GetSplitFlex("M",gt)).replace("split:","split:</I><I>")+"</I>";
+	dgebi("Flex2").title = gfFlex;
+	if(OddGender=="M")
+	{
+		gt = GetCompleteGTotherSpecies("F",gfFlex,"MAMMAL");
+	}
+	else
+	{
+		gt = GetCompleteGTotherSpecies("F",gfFlex,"");
+	}
+	//
+	gfFlex = gt; //complete GT
+	setlociFlex("F",gt);
+	thisKlr = GetKleurFlex("F",gt);
+	dgebi("Flex2").src = GetPlaatjeFlexDB(thisKlr,"F");
+	dgebi("FlexA2").href = dgebi("Flex2").src;
+	dgebi("LabelFlex2").innerHTML = MockUpGT1(gfFlex)+"<BR><B>"+thisKlr+"</B><BR><I>"+MockUpGT1(GetSplitFlex("F",gt)).replace("split:","split:</I><I>")+"</I>";
+	//
+	if(species.toLowerCase()=="bird")
+	{
+		dgebi("SetMockLevel").checked=true;
+		setMockLevel();goEN(1);goEN(2);
+	}
+	else
+	{
+		dgebi("HideGenotype").checked=true;
+	}
+	//
+	dgebi("geneInfo").innerHTML = geneInfoHTML;
+}
+//
+function KruisEmbed1()
+{
+	//
+	crossnr += 1;
+	select4later("M",gmFlex,dgebi("Flex1").src,"CROSS",mname,mmname,mfname);
+	select4later("F",gfFlex,dgebi("Flex2").src,"CROSS",fname,fmname,ffname);
+	//
+	var ResultArrayEmbed = new Array();
+	var hidegtchecked = "0";
+	if(dgebi("HideGenotype").checked)
+	{
+		hidegtchecked = "1";
+	}
+	else
+	{
+		hidegtchecked = "0";
+	}
+	var Mammal = setMammal(gmFlex,gfFlex);
+	ResultArrayEmbed = Kruising(gmFlex,gfFlex,"0");
+	var ResultHelper = new Array();
+	var TotalAnimals = 0;
+	//format the array
+	var txt = "<TABLE>";
+	for(ee=0;ee<ResultArrayEmbed.length;ee++)
+	{
+		if(ResultArrayEmbed[ee].split(';')[0]!="GENOTYPE") break;//bug
+		//
+		var gt = ResultArrayEmbed[ee].split(';')[2];
+		var mf = setMF2(Mammal,gt);
+		var mf2 = mf.replace("M","Male").replace("F","Female");
+		var perc = ResultArrayEmbed[ee].split(';')[3].replace("animals","specimens");
+		var clr = GetKleurFlex(mf,gt);
+		var jpg = GetPlaatjeFlexDB(clr,mf);
+		var img1 = "<A target=_blank href="+jpg+"><img onerror=imgError(this,'"+mf+"',false) alt='Sorry, no pic yet' title='' src="+jpg+" height="+picsize+" /></A>";
+		if(showPics==0) img1 = "<B><FONT size=7>*</FONT></B>";
+		txt += "<TR><TD valign=middle >"+img1+"</TD><TD valign=middle >";
+		txt += MockUpGT1(gt)+"<BR>";
+		txt += "Gender = "+mf2+", Ratio"+perc.split('Ratio')[1]+"<BR>";
+		var spl = GetSplitFlex(mf,gt);
+		txt += "<B>"+clr+"</B>&nbsp;&nbsp;&nbsp;<I>"+MockUpGT1(spl).replace("split:","split:</I><I>")+"</I><BR>";
+		if (mf=="M" || mf=="F")
+		{
+			txt += "<A href=\"javascript:setLists2('"+mf+"','"+gt+"','"+jpg+"','','"+mname+"','"+fname+"')\">Continue with this "+mf2+"</A> | <A href=\"javascript:select4later('"+mf+"','"+gt+"','"+jpg+"','SELECTED','','"+mname+"','"+fname+"')\">Select for later</A>";
+		}
+		else
+		{
+			txt += "<A href=\"javascript:setLists2('M','"+gt+"','"+jpg+"','','"+mname+"','"+fname+"')\">Continue as Male</A> | <A href=\"javascript:setLists2('F','"+gt+"','"+jpg+"','','"+mname+"','"+fname+"')\">Continue as Female</A> | <A href=\"javascript:select4later('M','"+gt+"','"+jpg+"','SELECTED','','"+mname+"','"+fname+"')\">Select for later as Male</A> | <A href=\"javascript:select4later('F','"+gt+"','"+jpg+"','SELECTED','','"+mname+"','"+fname+"')\">Select for later as Female</A>";
+		}	
+		txt += "</TD></TR>";
+		//
+		if(ee==0)
+		{
+			TotalAnimals = perc.split('=')[2].split('/')[1];
+		}
+		ResultHelper[ResultHelper.length] = new Array(clr,mf2,"",perc.split('=')[2].split('/')[0],jpg);
+	}
+	if(hidegtchecked=="0")
+	{
+		dgebi("result1Embed").innerHTML = txt+"</TABLE>";
+	}
+	else
+	{
+		dgebi("result1Embed").innerHTML = "";
+	}
+	//
+	ResultHelper.sort();
+	var prevclr = ResultHelper[0][0];
+	var prevmf  = ResultHelper[0][1];
+	var clrcnt  = 0;
+	var ResultSummary = new Array();
+	for(r in ResultHelper)
+	{
+		if(prevclr == ResultHelper[r][0] && prevmf == ResultHelper[r][1] && r==ResultHelper.length-1)
+		{
+			clrcnt += 1*(ResultHelper[r][3]);
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r][0],ResultHelper[r][1],clrcnt,ResultHelper[r][2],ResultHelper[r][4]);			
+		}
+		else if((prevclr != ResultHelper[r][0] || prevmf != ResultHelper[r][1]) && r==ResultHelper.length-1)
+		{
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r-1][0],ResultHelper[r-1][1],clrcnt,ResultHelper[r-1][2],ResultHelper[r-1][4]);
+			clrcnt = 1*(ResultHelper[r][3]);
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r][0],ResultHelper[r][1],clrcnt,ResultHelper[r][2],ResultHelper[r][4]);
+		}
+		else if((prevclr != ResultHelper[r][0] || prevmf != ResultHelper[r][1]))
+		{
+			ResultSummary[ResultSummary.length] = new Array(ResultHelper[r-1][0],ResultHelper[r-1][1],clrcnt,ResultHelper[r-1][2],ResultHelper[r-1][4]);
+			clrcnt = 1*(ResultHelper[r][3]);
+		}
+		else
+		{
+			clrcnt += 1*(ResultHelper[r][3]);
+		}
+		prevclr = ResultHelper[r][0];
+		prevmf  = ResultHelper[r][1];
+	}
+	txt = "Color Summary:<BR><TABLE>";
+	//
+	dataArray = new Array();
+	//
+	for(s in ResultSummary)
+	{
+		var img1 = "<A target=_blank href="+ResultSummary[s][4]+"><img onerror=imgError(this,'"+ResultSummary[s][1].substring(0,1)+"',false) alt='Sorry, no pic yet' title='' src="+ResultSummary[s][4]+" height="+picsize+" /></A>";
+		if(showPics==0) img1 = "<B><FONT size=7>*</FONT></B>";
+		txt += "<TR><TD valign=middle >"+img1+"</TD><TD valign=middle >";
+		var perc = GetPercentage(1*(ResultSummary[s][2]),TotalAnimals);
+		txt += "Gender = "+ResultSummary[s][1]+", "+perc+"%, minimum of specimens to breed: "+Math.ceil(TotalAnimals/(1*(ResultSummary[s][2])))+"<BR>";
+		txt += "<B>"+ResultSummary[s][0]+"</B><BR>";		
+		txt += "</TD></TR>";
+		if(1*perc < 10) perc = "0"+perc;
+		dataArray[dataArray.length] = new Array("",perc,ResultSummary[s][1],ResultSummary[s][0]);
+	}
+	dgebi("result2Embed").innerHTML = txt+"</TABLE>";
+	//
+	colArray  = new Array("","Percentage","Gender","Phenotype");
+	//
+	fillTab();
+}
+//
+function KruisMatrix2()
+{
+	//
+	crossnr += 1;
+	select4later("M",gmFlex,dgebi("Flex1").src,"PUNNETT",mname,mmname,mfname);
+	select4later("F",gfFlex,dgebi("Flex2").src,"PUNNETT",fname,fmname,ffname);
+	//
+	var ResultArrayEmbed = new Array();
+	var Mammal = setMammal(gmFlex,gfFlex);
+	ResultArrayEmbed = KruisingMatrix(gmFlex,gfFlex);
+	//verwerken matrix
+	var mtx = //"<INPUT id=SetMockLevel type='checkbox' onClick='setMockLevel();' onChange=setMockLevel() >Use Short Genotype Notation</INPUT><BR>"+
+	"<TABLE><TR><TD>Gametes</TD><TD></TD><TD>Maternal</TD></TR>";
+	mtx += "<TR><TD></TD><TD></TD>";
+	for(x in ResultArrayEmbed[0])
+	{
+		mtx += "<TD bgcolor=orange align=middle>"+MockUpGT1(ResultArrayEmbed[0][x]).replace(/,/g,", ")+"</TD>";
+	}
+	mtx += "</TR><TD>Paternal</TD>";
+	for(xx in ResultArrayEmbed)
+	{
+		if(xx > 1) //f0=female gametes;1=male gametes
+		{
+			mtx += "<TD bgcolor=orange>"+MockUpGT1(ResultArrayEmbed[1][xx-2]).replace(/,/g,", ")+"</TD>";
+			for(xxx in ResultArrayEmbed[xx])
+			{
+				mf = setMF(Mammal,ResultArrayEmbed[1][xx-2],ResultArrayEmbed[0][xxx]);
+				thisGT = ResultArrayEmbed[xx][xxx];
+				thisKlr = GetKleurFlex(mf,thisGT);
+				thisJpg = GetPlaatjeFlexDB(thisKlr,mf);
+				var img1 = "<A target=_blank href="+thisJpg+"><img onerror=imgError(this,'"+mf+"',true) alt='Sorry, no pic yet' title='' src="+thisJpg+" height="+picsize+" /></A><BR>";
+				if(showPics==0) img1 = "";
+				var spl = GetSplitFlex(mf,thisGT);
+				if(spl != "") spl = "<I>"+MockUpGT1(spl).replace("split:","split:</I><I>")+"</I>";
+				if(mf=="M" || mf=="F")
+				{
+					mtx += "<TD bgColor=yellow valign=top align=middle>"+img1+"<b>"+thisKlr+"</b><BR>"+spl+"<BR><A href=\"javascript:setLists2matrix('"+mf+"','"+thisGT+"','"+thisJpg+"','','"+mname+"','"+fname+"')\">Continue with this "+mf.replace("M","Male").replace("F","Female")+"</A><BR><BR>"+MockUpGT1(thisGT).replace(/,/g,", ")+"</TD>";
+				}
+				else
+				{
+					mtx += "<TD bgColor=yellow valign=top align=middle>"+img1+"<b>"+thisKlr+"</b><BR>"+spl+"<BR><A href=\"javascript:setLists2matrix('M','"+thisGT+"','"+thisJpg+"','','"+mname+"','"+fname+"')\">Continue as Male</A><BR><BR><A href=\"javascript:setLists2matrix('F','"+thisGT+"','"+thisJpg+"','','"+mname+"','"+fname+"')\">Continue as Female</A><BR><BR>"+MockUpGT1(thisGT).replace(/,/g,", ")+"</TD>";
+				}	
+			}
+			mtx += "</TR><TR><TD></TD>";
+		}
+	}
+	mtx += "</TR></TABLE>";
+	dgebi("result1Embed").innerHTML = mtx;
+	//
+	dgebi("result2Embed").innerHTML = "";
+	dgebi('span1').innerHTML="";
+	//if(MockLevel==3) dgebi("SetMockLevel").checked = true;
+	dgebi("result2Embed").innerHTML += "<br><a target='_blank' href='https://kippenjungle.nl/php/punnettFlex.php?txt="+document.title+"&mgt="+htmlEncode(gmFlex)+"&fgt="+htmlEncode(gfFlex)+"&flip=N&"+htmlEncode(querystring)+"'>Publish Punnett square as image (BETA)</a>";
+}
+//
+//set at init:
+var moduleFlex2 = "";
+function getCrossHref(cnr,tijd)
+{
+	var hreftxt = "";
+	//
+	if (moduleFlex2 != "") hreftxt = moduleFlex2;
+	else if (moduleFlex != "") hreftxt = moduleFlex;
+	else hreftxt = "kruisingFlex.html";
+	//
+	hreftxt = "<A target=_blank href="+hreftxt+"?"+querystring.replace(/ /g,"%20");
+	var mgtfgt = "";
+	for(t in ArraySelected)
+	{
+		if(ArraySelected[t][5]==tijd && ArraySelected[t][0]=="M" && ArraySelected[t][7]==cnr)
+		{
+			mgtfgt += "&mgt="+htmlEncode(getBreedbookGT(ArraySelected[t][1]));
+		}
+		else if(ArraySelected[t][5]==tijd && ArraySelected[t][0]=="F" && ArraySelected[t][7]==cnr)
+		{
+			mgtfgt += "&fgt="+htmlEncode(getBreedbookGT(ArraySelected[t][1]));
+			break;
+		}
+	}
+	hreftxt += mgtfgt;
+	hreftxt += ">Cross "+cnr+"</A> "+getShortLink(mgtfgt);
+	//
+	return hreftxt;
+}
+
+function imgError(ths,mf,yw)
+{
+	if(ths.src.indexOf("%5B")>=0) //Firefox
+	{
+		ths.src = ths.src.replace(/%5B/g,"[").replace(/%5D/g,"]").replace(/\[[^\]]*\]/g,"");
+	}
+	else if(ths.src.indexOf("[")>=0)
+	{
+		ths.src = ths.src.replace(/\[[^\]]*\]/g,"");
+	}
+	else if(ths.src.indexOf("(")>=0)
+	{
+		ths.src = ths.src.replace(/\([^\)]*\)/g,"");
+	}
+	else
+	{
+		if(mf=="M")
+		{
+			ths.src=(yw?'yellow':'')+'M.JPG';
+		}
+		else if(mf=="F")
+		{
+			ths.src=(yw?'yellow':'')+'F.JPG';
+		}
+		else
+		{
+			ths.src='dead.png';
+		}
+		if(yw && picsize>=60)
+		{
+			var x = picsize-60;
+			ths.height = picsize-x;
+			ths.style.margin = (x/2)+"px";
+		}
+	}
+}
+
+function highlightBrackets()
+{
+	var fnd = false;
+	var btags = document.getElementsByTagName("b");
+	for(var a in btags)
+	{
+		if(btags[a].innerHTML && btags[a].innerHTML.replace(/%5B/g,"[").indexOf("[")>0 && btags[a].innerHTML.indexOf("span style")<0)
+		{
+			fnd=true;
+			btags[a].innerHTML = "<span style='display:none'>"+btags[a].innerHTML.replace(/%5B/g,"[").replace(/%5D/g,"]").replace(/\[[^\]]*\]/g, "</span> <span style=''>$&</span><span style='display:none'>").replace(/\(/g, "</span><span style=''> (</span><span style='display:none'>").replace(/\)/g, "</span><span style=''>)</span><span style='display:none'>").replace(/split/g, "</span><span style=''>[split]</span><span style='display:none'>").replace(/\([^\[\)]*\)/g,"").replace(/\[/g," ").replace(/\]/g," ")+"</span>";
+		}
+	}
+	//NB bij split geen (allel) verwijderen:
+	var itags = document.getElementsByTagName("i");
+	for(var a in itags)
+	{
+		if(itags[a].innerHTML && itags[a].innerHTML.replace(/%5B/g,"[").indexOf("[")>0 && itags[a].innerHTML.indexOf("span style")<0)
+		{
+			fnd=true;
+			itags[a].innerHTML = "<span style='display:none'>"+itags[a].innerHTML.replace(/%5B/g,"[").replace(/%5D/g,"]").replace(/\[[^\]]*\]/g, "</span> <span style=''>$&</span><span style='display:none'>").replace(/\(/g, "</span><span style=''> (").replace(/\)/g, ")</span><span style='display:none'>").replace(/\[/g," ").replace(/\]/g," ")+"</span>";
+		}
+	}
+	if(!fnd) alert("Nothing to translate...\nThe designer of a calculator can add a translation to allele effects between square brackets\neg. Wit [White]\nThis button removes the first language, that is necessary to get the correct image, so the description would be less complex.\n=> White");
+}
+
+//
+setTimeout(function(){
+	if(dgebi("FlexA1")){
+		if(dgebi("Mnaming")){			
+		}
+		else
+		{
+			var newNode1 = document.createElement("span");
+			newNode1.id = "Mnaming";
+			dgebi("FlexA1").parentNode.insertBefore(newNode1, dgebi("FlexA1").nextSibling);
+			newNode1 = document.createElement("span");
+			newNode1.id = "Fnaming";
+			dgebi("FlexA2").parentNode.insertBefore(newNode1, dgebi("FlexA2").nextSibling);
+			//
+			checkNaming();
+		}
+	}
+},1000);
+
+function checkNaming(){
+	if(dgebi("Mnaming")){
+		dgebi("Mnaming").innerHTML = "<br>" + mname+" <a href=\"javascript:naming('M')\">rename</a>";
+		dgebi("Fnaming").innerHTML = "<br>" + fname+" <a href=\"javascript:naming('F')\">rename</a>";
+		setTimeout(checkNaming,1000);
+	}
+}
+function naming(mf){
+	var name=prompt("Please enter a Name", mf=="M" ? mname : fname);
+		if (name!=null) //leegmaken?
+		{
+			if(mf=="M") mname = name;
+			if(mf=="F") fname = name;
+		}
+}
